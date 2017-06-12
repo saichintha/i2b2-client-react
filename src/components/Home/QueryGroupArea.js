@@ -16,11 +16,12 @@ class QueryGroupArea extends Component {
   }
 
   render() {
+    var i = 1;
     return (
-                    <div className="row center-xs" style={{height: 200, marginTop: 20, minWidth: 540}}>
-                        <QueryGroup/>
-                        <QueryGroup/>
-                        <QueryGroup/>
+                    <div className="row center-xs" style={{height: 350, marginTop: 20, minWidth: 540}}>
+                        <QueryGroup num={i++}/>
+                        <QueryGroup num={i++}/>
+                        <QueryGroup num={i++}/>
                     </div>
     );
   }

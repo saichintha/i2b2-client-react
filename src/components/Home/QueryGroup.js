@@ -19,7 +19,7 @@ class QueryGroup extends Component {
     return (
         <div className="col-xs" style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, border: `1px solid ${blue500}`}}>
             <div style={{paddingLeft: 20, paddingTop: 14, paddingBottom: 14,backgroundColor: blue500}}>
-                Group
+                Group {this.props.num.toString()}
             </div>
             <Divider/>
         </div>
