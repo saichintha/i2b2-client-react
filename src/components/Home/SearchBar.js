@@ -11,12 +11,12 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
-
+import SearchResult from './SearchResult';
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
-
+    
     this.state = {
       searchText: '',
       dataSource: [],
@@ -24,64 +24,80 @@ class SearchBar extends Component {
       anchorEl: null,
       barWidth: null
     }
+
+    this.count = 1;
   }
 
-  handleSearchText = (searchText) => {
+  handleSearchText = (e) => {
+      const that = this;
+      const searchText = e.target.value;
       this.setState({
           searchText: searchText
       });
 
       if(searchText.length > 2){
-        console.log(searchText)
           axios.post(apiURL + '/api/search', {
               searchText: searchText.toLowerCase()
           })
 
           .then((response) => {
-            if(response.data != []){
+            if(response.data.length > 0){
+
+              // var resArray = response.data.map(function(row) {
+              //   return row.c_name.toString();
+              // });
+
               var resArray = response.data.map(function(row) {
-                return row.c_name.toString();
+                // return {
+                //   text: row.c_name,
+                //   value: (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname}/>),
+                // };
+                    return (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname} key={that.count++}/>)
               });
-              console.log(resArray)
+
                 this.setState({
                     dataSource: resArray,
-                });
+                    open: true
+                }); 
             } else {
               this.setState({
-                dataSource: ['No results']
+                dataSource: (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
+                    <h3>No results to display.</h3>
+                </Paper>),
+                open: true
               })
             }
             
           })
           .catch((err) => console.log(err));
-      } else {
-        this.setState({
-          dataSource: []
-        })
       }
 
     }
 
-    // handleRequestClose = () => {
-    //   this.setState({
-    //     open: false
-    //   });
-    // };
+    handleRequestClose = () => {
+      this.setState({
+        open: false
+      });
+    };
 
     handleNewRequest = () => {
-      console.log('Im called')
       this.setState({
         searchText: '',
-        dataSource: []
+        dataSource: (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
+                    <h3>No results to display.</h3>
+                </Paper>)
       });
     };
 
     componentDidMount (){
+      this.setState({
+        barWidth: this.searchBar.offsetWidth,
+        anchorEL: this.searchBar.getBoundingClientRect()
+      });
       window.addEventListener("resize", this.updateDimensions)
     }
 
     updateDimensions = () => {
-      console.log(this.searchBar)
       this.setState({
         barWidth: this.searchBar.offsetWidth
       });
@@ -97,7 +113,7 @@ class SearchBar extends Component {
                     <Search color={blue500} style={{height: 30, width: 30}}/>
                   </div>
                   <div style={{display: 'inline-flex', width: 'calc(100% - 55px)'}}>
-                    {/*<TextField
+                    <TextField
                     hintText="Search for diagnoses, medications, lab tests, visit details etc..."
                     underlineStyle={{display: 'none'}}
                     style={{height: 56, marginLeft: 20, width: 'inherit'}}
@@ -105,26 +121,26 @@ class SearchBar extends Component {
                     onChange={this.handleSearchText}
                     value={this.state.searchText}
                   />
-                  <Popover
-                    open={this.state.open}
-                    anchorEl={this.state.anchorEl}
-                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                    onRequestClose={this.handleRequestClose}
-                  >
-                    <Menu>
-                      {this.state.result}
-                    </Menu>
-                  </Popover>*/}
+                        <Popover
+                          open={this.state.open}
+                          anchorEl={this.searchBar}
+                          style={{width: this.state.barWidth, marginTop: 10}}
+                          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                          onRequestClose={this.handleRequestClose}
+                        >
+                          <List style={{maxHeight: 400, overflowY: 'auto'}} className="scrollbar">
+                            {this.state.dataSource}
+                          </List>
+                  </Popover>
 
-                  <AutoComplete
+                  {/*<AutoComplete
                   hintText='Search diagnoses, medications, lab tests, visit details etc...'
-                  dataSource={this.state.dataSource}
+                  dataSource={dataSource1}
                   onUpdateInput={(searchText) => {this.handleSearchText(searchText)}}
                   onNewRequest={this.handleNewRequest}
                   fullWidth={true}
-                  filter={(searchText, key) => true}
-                  dataSourceConfig={{text: 'text'}}
+                  filter={AutoComplete.noFilter}
                   textFieldStyle={{height: 56, paddingLeft: 20, width: 'inherit'}}
                   underlineStyle={{display: 'none'}}
                   hintStyle={{bottom: 14, width: 'inherit', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}
@@ -136,7 +152,8 @@ class SearchBar extends Component {
                     width: this.state.barWidth,
                     marginTop: 10
                   }}}
-                  />
+                  open={true}
+                  />*/}
                   </div>
                   </div>
 
