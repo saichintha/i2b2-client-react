@@ -12,6 +12,7 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
 import SearchResult from './SearchResult';
+import LinearProgress from 'material-ui/LinearProgress';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -22,7 +23,8 @@ class SearchBar extends Component {
       dataSource: [],
       open: false,
       anchorEl: null,
-      barWidth: null
+      barWidth: null,
+      loading: false
     }
 
     this.count = 1;
@@ -32,10 +34,11 @@ class SearchBar extends Component {
       const that = this;
       const searchText = e.target.value;
       this.setState({
-          searchText: searchText
+          searchText: searchText,
+          loading: true
       });
 
-      if(searchText.length > 2){
+      if(searchText.length >= 1){
           axios.post(apiURL + '/api/search', {
               searchText: searchText.toLowerCase()
           })
@@ -52,19 +55,21 @@ class SearchBar extends Component {
                 //   text: row.c_name,
                 //   value: (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname}/>),
                 // };
-                    return (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname} key={that.count++}/>)
+                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++}/>)
               });
 
                 this.setState({
                     dataSource: resArray,
-                    open: true
+                    open: true,
+                    loading: false
                 }); 
             } else {
               this.setState({
                 dataSource: (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
                     <h3>No results to display.</h3>
                 </Paper>),
-                open: true
+                open: true,
+                loading: false
               })
             }
             
@@ -90,11 +95,12 @@ class SearchBar extends Component {
     };
 
     componentDidMount (){
+      this.searchField.focus();
       this.setState({
         barWidth: this.searchBar.offsetWidth,
         anchorEL: this.searchBar.getBoundingClientRect()
       });
-      window.addEventListener("resize", this.updateDimensions)
+      window.addEventListener("resize", this.updateDimensions);
     }
 
     updateDimensions = () => {
@@ -103,7 +109,19 @@ class SearchBar extends Component {
       });
     }
 
+    onFocus = () => {
+      this.setState({
+        open: true
+      })
+    }
+
   render() {
+
+    var loadingBar = null;
+    if(this.state.loading){
+      loadingBar = (<LinearProgress mode="indeterminate" />);
+    }
+
     return (
                 <Paper style={{height: 56, minWidth: 500, borderRadius: 4}} zDepth={1}>
                   <div ref={(input) => { this.searchBar = input; }}>
@@ -113,6 +131,7 @@ class SearchBar extends Component {
                     <Search color={blue500} style={{height: 30, width: 30}}/>
                   </div>
                   <div style={{display: 'inline-flex', width: 'calc(100% - 55px)'}}>
+                    
                     <TextField
                     hintText="Search for diagnoses, medications, lab tests, visit details etc..."
                     underlineStyle={{display: 'none'}}
@@ -120,7 +139,9 @@ class SearchBar extends Component {
                     hintStyle={{bottom: 14, width: 'inherit', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}
                     onChange={this.handleSearchText}
                     value={this.state.searchText}
-                  />
+                    onFocus={ this.onFocus }
+                    ref={(input) => { this.searchField = input; }}
+                    />
                         <Popover
                           open={this.state.open}
                           anchorEl={this.searchBar}
@@ -129,31 +150,10 @@ class SearchBar extends Component {
                           targetOrigin={{horizontal: 'left', vertical: 'top'}}
                           onRequestClose={this.handleRequestClose}
                         >
-                          <List style={{maxHeight: 400, overflowY: 'auto'}} className="scrollbar">
+                          <List style={{maxHeight: 400, overflowY: 'auto', padding: 0}} className="scrollbar">
                             {this.state.dataSource}
                           </List>
                   </Popover>
-
-                  {/*<AutoComplete
-                  hintText='Search diagnoses, medications, lab tests, visit details etc...'
-                  dataSource={dataSource1}
-                  onUpdateInput={(searchText) => {this.handleSearchText(searchText)}}
-                  onNewRequest={this.handleNewRequest}
-                  fullWidth={true}
-                  filter={AutoComplete.noFilter}
-                  textFieldStyle={{height: 56, paddingLeft: 20, width: 'inherit'}}
-                  underlineStyle={{display: 'none'}}
-                  hintStyle={{bottom: 14, width: 'inherit', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}
-                  searchText={this.state.searchText}
-                  maxSearchResults={10}
-                  openOnFocus={true}
-                  popoverProps={{style: {
-                    marginLeft: '-50px',
-                    width: this.state.barWidth,
-                    marginTop: 10
-                  }}}
-                  open={true}
-                  />*/}
                   </div>
                   </div>
 
