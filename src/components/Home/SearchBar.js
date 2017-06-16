@@ -34,8 +34,7 @@ class SearchBar extends Component {
       const that = this;
       const searchText = e.target.value;
       this.setState({
-          searchText: searchText,
-          loading: true
+          searchText: searchText
       });
 
       if(searchText.length >= 1){
@@ -60,17 +59,17 @@ class SearchBar extends Component {
 
                 this.setState({
                     dataSource: resArray,
-                    open: true,
-                    loading: false
-                }); 
+                    open: true
+                });
+                this.props.handleGroupPosition(this.state.open); 
             } else {
               this.setState({
                 dataSource: (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
                     <h3>No results to display.</h3>
                 </Paper>),
-                open: true,
-                loading: false
+                open: true
               })
+              this.props.handleGroupPosition(this.state.open);
             }
             
           })
@@ -83,6 +82,7 @@ class SearchBar extends Component {
       this.setState({
         open: false
       });
+      this.props.handleGroupPosition(this.state.open);
     };
 
     handleNewRequest = () => {
@@ -117,10 +117,11 @@ class SearchBar extends Component {
 
   render() {
 
-    var loadingBar = null;
-    if(this.state.loading){
-      loadingBar = (<LinearProgress mode="indeterminate" />);
-    }
+    // var loadingBar = null;
+    // if(this.state.loading){
+    //   loadingBar = (<LinearProgress mode="indeterminate" />);
+    // 
+
 
     return (
                 <Paper style={{height: 56, minWidth: 500, borderRadius: 4}} zDepth={1}>
@@ -135,25 +136,26 @@ class SearchBar extends Component {
                     <TextField
                     hintText="Search for diagnoses, medications, lab tests, visit details etc..."
                     underlineStyle={{display: 'none'}}
-                    style={{height: 56, marginLeft: 20, width: 'inherit'}}
+                    style={{height: 56, marginLeft: 20, width: 'inherit', cursor: 'text'}}
                     hintStyle={{bottom: 14, width: 'inherit', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}
                     onChange={this.handleSearchText}
                     value={this.state.searchText}
                     onFocus={ this.onFocus }
                     ref={(input) => { this.searchField = input; }}
                     />
-                        <Popover
-                          open={this.state.open}
-                          anchorEl={this.searchBar}
-                          style={{width: this.state.barWidth, marginTop: 10}}
-                          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                          targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                          onRequestClose={this.handleRequestClose}
-                        >
-                          <List style={{maxHeight: 400, overflowY: 'auto', padding: 0}} className="scrollbar">
-                            {this.state.dataSource}
-                          </List>
-                  </Popover>
+                            <Popover
+                              open={this.state.open}
+                              anchorEl={this.searchBar}
+                              style={{width: this.state.barWidth, marginTop: 10}}
+                              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                              targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                              onRequestClose={this.handleRequestClose}
+                            >
+                              <List style={{maxHeight: 400, overflowY: 'auto', padding: 0}} className="scrollbar">
+                                {this.state.dataSource}
+                              </List>
+                            </Popover>
+                        
                   </div>
                   </div>
 
