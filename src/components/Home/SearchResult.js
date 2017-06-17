@@ -12,6 +12,7 @@ import Add from 'material-ui/svg-icons/content/add-circle';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import PatientDemographics from './PatientDemographics';
 
 class SearchResult extends Component {
   constructor(props) {
@@ -22,7 +23,8 @@ class SearchResult extends Component {
         testPath: null,
         dirColor: grey300,
         complete: false,
-        demDiv: false
+        demDiv: false,
+        demDone: false
     }
 
     
@@ -47,7 +49,7 @@ class SearchResult extends Component {
     }
 
     getPatientDemInfo = () => {
-        if(this.state.patients){
+        if(this.state.patients && !this.state.demDone){
             var patientArray = this.state.patients.map((patient) => {
                 return patient.patient_num
             });
@@ -58,6 +60,10 @@ class SearchResult extends Component {
             .then((response) => {
                 // console.log('Patient Dem Info', response.data);
                 this.parsePatientDemData(response.data);
+            })
+        } else {
+            this.setState({
+                demDiv: !this.state.demDiv
             })
         }
         
@@ -94,7 +100,9 @@ class SearchResult extends Component {
             races: this.formatDemArray(raceArray),
             genders: this.formatGender(genderArray),
             religions: this.formatDemArray(religionArray),
-            languages: this.formatDemArray(langArray)
+            languages: this.formatDemArray(langArray),
+            demDone: true,
+            demDiv: true
         })
 
     }
@@ -152,9 +160,6 @@ class SearchResult extends Component {
                 ageGroupArray[8]++;
             }
         }
-        this.setState({
-            demDiv: true
-        })
         return ageGroupArray;
     }
 
@@ -200,7 +205,7 @@ class SearchResult extends Component {
       if(this.state.demDiv){
         demDiv = (
             <div>
-                {this.state.age}
+                <PatientDemographics age={this.state.ages} race={this.state.races} gender={this.state.genders} religion={this.state.religions} lang={this.state.languages}/>
             </div>
         );
       }
@@ -252,7 +257,7 @@ class SearchResult extends Component {
                     style={{width: '100%'}}
                     onTouchTap={this.getPatientDemInfo}
                     />
-
+                
                     <Divider/>
 
                     <div>

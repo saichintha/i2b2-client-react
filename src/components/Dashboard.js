@@ -12,14 +12,32 @@ import RunQuery from './Home/RunQuery';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      marginValue: 0
+    }
+  }
+
+  handleGroupPosition = (searchOpen) => {
+    // if(searchOpen){
+    //   this.setState({
+    //     marginValue: 420
+    //   });
+    // } else {
+    //   this.setState({
+    //     marginValue: 0
+    //   })
+    // }   
   }
 
   render() {
     return (
           <div className="row center-xs">
-            <div className="col-xs-9" >
-                <SearchBar/>
-                <QueryGroupArea/>
+            <div className="col-xs-9" ref={(input) => { this.searchDiv = input; }}>
+                <SearchBar handleGroupPosition={this.handleGroupPosition}/>
+                <div style={{marginTop: this.state.marginValue}}>
+                  <QueryGroupArea/>                  
+                </div>
                 <RunQuery/>
             </div>
           </div>

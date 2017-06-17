@@ -21,7 +21,7 @@ class RunQuery extends Component {
 
   render() {
     return (
-                    <div className="row center-xs" style={{height: 200, marginTop: 20, minWidth: 540}}>
+                    <div className="row center-xs" style={{marginTop: 20, minWidth: 540}}>
                         <FlatButton label="Search" primary={true} icon={<Search/>} backgroundColor={blue100} hoverColor={blue200} rippleColor={blue400}/>
                     </div>
     );
