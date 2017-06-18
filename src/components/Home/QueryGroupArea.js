@@ -19,9 +19,9 @@ class QueryGroupArea extends Component {
     var i = 1;
     return (
                     <div className="row center-xs" style={{height: 350, marginTop: 20, minWidth: 540}}>
-                        <QueryGroup num={i++}/>
-                        <QueryGroup num={i++}/>
-                        <QueryGroup num={i++}/>
+                        <QueryGroup num={i++} active={true}/>
+                        <QueryGroup num={i++} active={false}/>
+                        <QueryGroup num={i++} active={false}/>
                     </div>
     );
   }
