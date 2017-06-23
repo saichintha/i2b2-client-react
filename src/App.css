@@ -7,6 +7,8 @@ html {
   overflow-x: hidden;
 }
 
+.grid-item { width: 150px; }
+
 strong { font-weight: bold; }
 em {font-style: italic;}
 blockquote { 

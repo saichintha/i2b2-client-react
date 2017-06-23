@@ -18,7 +18,6 @@ class SearchResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        patients: null,
         patientNum: '-',
         testPath: null,
         dirColor: grey300,
@@ -27,7 +26,6 @@ class SearchResult extends Component {
         demDone: false
     }
 
-    
   }
 
    componentDidMount(){
@@ -37,11 +35,9 @@ class SearchResult extends Component {
         })
         .then((response) => {
             this.setState({
-                patients: response.data,
-                patientNum: response.data.length.toString(),
+                patientNum: response.data,
                 complete: true
             })
-            // console.log('Patient set', response.data, typeof(response.data));
         })
         .catch((err) => {
             console.log(err);
@@ -49,118 +45,78 @@ class SearchResult extends Component {
     }
 
     getPatientDemInfo = () => {
-        if(this.state.patients && !this.state.demDone){
-            var patientArray = this.state.patients.map((patient) => {
-                return patient.patient_num
-            });
-
+        if(this.state.patientNum != null && !this.state.demDone){
             axios.post(apiURL + '/api/getPatientDem', {
-                patientSet: patientArray.toString()
+                concept_basecode: this.props.conceptCode
             })
             .then((response) => {
-                // console.log('Patient Dem Info', response.data);
-                this.parsePatientDemData(response.data);
+                this.processDemographics(response.data);
             })
         } else {
             this.setState({
                 demDiv: !this.state.demDiv
             })
         }
-        
     }
 
-    parsePatientDemData = (patientDemArray) => {
-        var patientArray = patientDemArray.map((patient) => {
-            return patient.concept_cd;
-        });
-        // console.log(patientArray)
-        var ageArray = [];
-        var raceArray = [];
-        var religionArray = [];
-        var genderArray = [];
-        var langArray = [];
-        for (var i in patientArray) {
-            const dem = patientArray[i];
-            if (dem.includes('AGE') && !dem.includes('LANGUAGE')) {
-                // console.log(dem.split(':')[1]);
-                ageArray.push(parseInt(dem.split(':')[1]));
-            } else if (dem.includes('RACE')) {
-                raceArray.push(dem.split(':')[1]);
-            } else if (dem.includes('RELIGION')) {
-                religionArray.push(dem.split(':')[1]);
-            } else if (dem.includes('LANGUAGE')) {
-                langArray.push(dem.split(':')[1]);
-            } else if (dem.includes('SEX')) {
-                genderArray.push(dem.split(':')[1]);
-            }
+    processDemographics = (rawDemJSON) => {
+        var age = {}, lang = {}, race = {}, religion = {}, sex = {};
+        for (var i in rawDemJSON) {
+            const dem = rawDemJSON[i];
+           if (dem.concept_cd.includes('DEM|AGE')) {
+                const ageNum = dem.concept_cd.split(':')[1];
+                age[ageNum] = dem.count;
+           } else if (dem.concept_cd.includes('DEM|LANGUAGE')) {
+               const langName = dem.concept_cd.split(':')[1];
+                lang[langName] = dem.count;
+           } else if (dem.concept_cd.includes('DEM|RACE')) {
+               const raceName = dem.concept_cd.split(':')[1];
+               race[raceName] = dem.count;
+           } else if (dem.concept_cd.includes('DEM|RELIGION')) {
+               const religionName = dem.concept_cd.split(':')[1];
+               religion[religionName] = dem.count;
+           } else if (dem.concept_cd.includes('DEM|SEX')) {
+               const sexName = dem.concept_cd.split(':')[1];
+               sex[sexName] = dem.count;
+           } 
         }
-
+        var ageGroups = this.formatAges(age);
         this.setState({
-            ages: this.formatAgesToAgeGroups(ageArray),
-            races: this.formatDemArray(raceArray),
-            genders: this.formatGender(genderArray),
-            religions: this.formatDemArray(religionArray),
-            languages: this.formatDemArray(langArray),
+            ages: ageGroups,
+            races: race,
+            genders: sex,
+            religions: religion,
+            languages: lang,
             demDone: true,
             demDiv: true
         })
-
     }
 
-    formatDemArray = (demArray) => {
-        var dems = {}
-        for (var i in demArray) {
-            const dem = demArray[i];
-            if(!dems[dem]){
-                dems[dem] = 1;
-            } else {
-                dems[dem] = dems[dem] + 1;
-            }
-        }
-        return dems;
-    }
-
-    formatGender = (genderArray) => {
-        var males = 0;
-        var females = 0;
-        var unknown = 0;
-        for (var i in genderArray) {
-            if (genderArray[i] == 'm'){
-                males++;
-            } else if (genderArray[i] == 'f') {
-                females++
-            } else {
-                unknown++;
-            }
-        }
-        return [males, females, unknown];
-    }
-
-    formatAgesToAgeGroups = (ageArray) => {
-        var ageGroupArray = [0,0,0,0,0,0,0,0,0];
-        for (var i in ageArray) {
-            const age = ageArray[i];
+    formatAges = (ageJSON) => {
+        var ageGroups = [0,0,0,0,0,0,0,0,0];
+        for (var age in ageJSON) {
+            const count = parseInt(ageJSON[age]);
             if (age > 0 && age <= 9) {
-                ageGroupArray[0]++;
+                ageGroups[0] += count;
             } else if (age > 9 && age <= 17) {
-                ageGroupArray[1]++;
+                ageGroups[1] += count;
             } else if (age > 17 && age <= 34) {
-                ageGroupArray[2]++;
+                ageGroups[2] += count;
             } else if (age > 34 && age <= 44) {
-                ageGroupArray[3]++;
+                ageGroups[3] += count;
             } else if (age > 44 && age <= 54) {
-                ageGroupArray[4]++;
+                ageGroups[4] += count;
             } else if (age > 54 && age <= 64) {
-                ageGroupArray[5]++;
+                ageGroups[5] += count;
             } else if (age > 64 && age <= 74) {
-                ageGroupArray[6]++;
+                ageGroups[6] += count;
             } else if (age > 74 && age <= 84) {
-                ageGroupArray[7]++;
+                ageGroups[7] += count;
             } else if (age > 84) {
-                ageGroupArray[8]++;
+                ageGroups[8] += count;
             }
         }
-        return ageGroupArray;
+        return ageGroups;
     }
 
     formatConceptPath = () => {
@@ -187,7 +143,6 @@ class SearchResult extends Component {
     }
 
     handleAdd = (e) => {
-        e.preventDefault();
         this.setState({
             addOpen: true,
             anchorEl: event.currentTarget,
@@ -212,6 +167,7 @@ class SearchResult extends Component {
       if(this.state.complete){
             return (
                 <div>
+                    
                     <ListItem primaryText={
                         <Paper style={{display: 'inline-flex', backgroundColor:'transparent', width: '100%'}} zDepth={0}>
                             <div style={{display: 'inline-flex', marginRight: 20}} ref={(input) => { this.addButton = input; }}>
