@@ -38,7 +38,7 @@ class Dashboard extends Component {
                 <div style={{marginTop: this.state.marginValue}}>
                   <QueryGroupArea/>                  
                 </div>
-                <RunQuery/>
+                
             </div>
           </div>
     );

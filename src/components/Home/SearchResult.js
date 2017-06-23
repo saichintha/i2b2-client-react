@@ -14,14 +14,17 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import PatientDemographics from './PatientDemographics';
 
+import {connect} from 'react-redux';
+import * as actions from './../../redux/actions.js'
+
 class SearchResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        patientNum: '-',
+        patientNum: null,
         testPath: null,
         dirColor: grey300,
-        complete: false,
+        complete: true,
         demDiv: false,
         demDone: false
     }
@@ -36,7 +39,6 @@ class SearchResult extends Component {
         .then((response) => {
             this.setState({
                 patientNum: response.data,
-                complete: true
             })
         })
         .catch((err) => {
@@ -155,6 +157,18 @@ class SearchResult extends Component {
         });
     };
 
+    handleAddToGroup = (event, menuItem, index) => {
+        var {dispatch} = this.props;
+        dispatch(actions.addConceptToGroup(index+1, {
+            conceptName: this.props.conceptName,
+            conceptCode: this.props.conceptCode
+        }));
+        this.setState({
+            addOpen: false
+        });
+        this.props.closeSearch();
+    }
+
   render() {
       var demDiv = (<div/>);
       if(this.state.demDiv){
@@ -165,6 +179,10 @@ class SearchResult extends Component {
         );
       }
       if(this.state.complete){
+          var patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500}}> - </span>);
+          if(this.state.patientNum){
+            patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500}}>{this.state.patientNum}</span>);
+          }
             return (
                 <div>
                     
@@ -183,11 +201,11 @@ class SearchResult extends Component {
                                     onRequestClose={this.handleRequestClose}
                                     style={{marginTop: '-10px'}}
                                     >
-                                    <Menu>
-                                        <MenuItem primaryText="Group 1" />
-                                        <MenuItem primaryText="Group 2" />
-                                        <MenuItem primaryText="Group 3" />
-                                        <MenuItem primaryText="Add Group" />
+                                    <Menu
+                                    onItemTouchTap={this.handleAddToGroup}>
+                                        <MenuItem primaryText="Group 1"/>
+                                        <MenuItem primaryText="Group 2"/>
+                                        <MenuItem primaryText="Group 3"/>
                                     </Menu>
                                     </Popover>
                             </div>
@@ -206,12 +224,12 @@ class SearchResult extends Component {
                             </div>
                             <div style={{display: 'inline-flex', right: 50, bottom: 8, alignItems: 'center'}}>
                                 <Group style={{paddingRight: 16}} color={blue800}/>
-                            <span style={{ position: 'relative', color: blue800, fontWeight: 500}}>{this.state.patientNum}</span>
+                                    {patientNum}
                             </div>
                         </Paper>
                     }
                     style={{width: '100%'}}
-                    onTouchTap={this.getPatientDemInfo}
+                    onTouchTap={this.handleAdd}
                     />
                 
                     <Divider/>
@@ -274,4 +292,4 @@ class SearchResult extends Component {
   }
 }
 
-export default SearchResult;
+export default connect()(SearchResult);

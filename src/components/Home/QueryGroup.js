@@ -8,6 +8,7 @@ import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
+import GroupConcept from './GroupConcept';
 
 class QueryGroup extends Component {
   constructor(props) {
@@ -44,16 +45,36 @@ class QueryGroup extends Component {
         </div>
       ) 
     }
-    return (      
+
+    if (this.props.groupInfo.length) {
+
+      var conceptDiv = this.props.groupInfo.map((concept) => {
+        return (
+          <GroupConcept conceptName={concept.conceptName}/>
+        )
+      })
+      return (
         <div className="col-xs" style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, border: `1px solid ${this.state.divColor}`}}>
-            <div style={{paddingLeft: 20, paddingTop: 14, paddingBottom: 14,backgroundColor: this.state.divColor}}>
-                Group {this.props.num.toString()}
-            </div>
-            <div style={{display: 'flex', alignItems: 'center', height: '87%', alignContent: 'center', justifyContent: 'center'}}>
-                  {empty}
-            </div>
-        </div>
-    );
+              <div style={{paddingLeft: 20, paddingTop: 14, paddingBottom: 14,backgroundColor: this.state.divColor}}>
+                  Group {this.props.num.toString()}
+              </div>
+              <div style={{display: 'flex', height: '87%'}}>
+                    {conceptDiv}
+              </div>
+          </div>
+      );
+    } else {
+      return (      
+          <div className="col-xs" style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, border: `1px solid ${this.state.divColor}`}}>
+              <div style={{paddingLeft: 20, paddingTop: 14, paddingBottom: 14,backgroundColor: this.state.divColor}}>
+                  Group {this.props.num.toString()}
+              </div>
+              <div style={{display: 'flex', alignItems: 'center', height: '87%', alignContent: 'center', justifyContent: 'center'}}>
+                    {empty}
+              </div>
+          </div>
+      );
+    }
   }
 }
 

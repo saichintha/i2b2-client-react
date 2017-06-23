@@ -54,7 +54,7 @@ class SearchBar extends Component {
                 //   text: row.c_name,
                 //   value: (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname}/>),
                 // };
-                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++}/>)
+                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++} closeSearch={that.toggleSearch}/>)
               });
 
                 this.setState({
@@ -84,6 +84,12 @@ class SearchBar extends Component {
       });
       this.props.handleGroupPosition(this.state.open);
     };
+
+    toggleSearch = () => {
+      this.setState({
+        open: false
+      })
+    }
 
     handleNewRequest = () => {
       this.setState({

@@ -14,9 +14,13 @@ import Header from './components/Header'
 import OntologyMain from './components/OntologyHome/OntologyMain'
 import Dashboard from './components/Dashboard';
 
+var {Provider} = require('react-redux');
+var store = require('./redux/storeConfig').configure();
+
 class App extends Component {
   render() {
     return (
+      <Provider store={store}>
           <MuiThemeProvider muiTheme={getMuiTheme(themeColors)}>
             <div className="App">
                 <Header/>
@@ -24,7 +28,8 @@ class App extends Component {
                     <Dashboard/>
                 </div>
             </div>
-          </MuiThemeProvider> 
+          </MuiThemeProvider>
+      </Provider> 
     );
   }
 }
