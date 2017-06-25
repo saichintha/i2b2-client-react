@@ -36,7 +36,7 @@ class QueryGroupArea extends Component {
     }
 
     queryGroups = groupInfo.map((group) => {
-      i += 1;
+      i = parseInt(i) + 1;
       return (
         <QueryGroup num={i} active={true} groupInfo={group}/>
       )

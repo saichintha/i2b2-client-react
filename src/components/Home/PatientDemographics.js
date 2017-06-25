@@ -40,7 +40,7 @@ class PatientDemographics extends Component {
 
 
     return (
-            <Paper style={{display: 'inline-flex', backgroundColor: grey100, width: '100%', boxShadow:         `inset 0 0 8px ${grey200}`, padding: 10, borderRadius: 0, borderBottom: `solid 1px ${grey200}`}} zDepth={0}>
+            <Paper style={{display: 'inline-flex', backgroundColor: 'transparent', width: '100%', padding: 10, borderRadius: 0}} zDepth={0}>
                 <div style={{display: 'inline-flex', marginRight: 20, backgroundColor: 'transparent', width: 30}} />
                 <div style={{width: '100%'}}>
                     <div style={{width: '100%', color: 'black', fontWeight: 400, fontFamily: 'Roboto Mono', marginRight: 50}}>
