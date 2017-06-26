@@ -157,9 +157,9 @@ class SearchBar extends Component {
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}
                               onRequestClose={this.handleRequestClose}
                             >
-                              <List style={{maxHeight: 400, overflowY: 'auto', padding: 0}} className="scrollbar">
+                              <div style={{maxHeight: 400, overflowY: 'auto', padding: 0, margin: 0, width:'100%', overflowX: 'hidden'}} className="scrollbar">
                                 {this.state.dataSource}
-                              </List>
+                              </div>
                             </Popover>
                         
                   </div>

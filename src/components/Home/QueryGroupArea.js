@@ -21,7 +21,7 @@ class QueryGroupArea extends Component {
   }
 
   render() {
-    var i = 0;
+    var groupNum = 0;
     var queryGroups = (null);
     const {groupState} = this.props;
     var groupInfo = [[],[],[]];
@@ -36,9 +36,10 @@ class QueryGroupArea extends Component {
     }
 
     queryGroups = groupInfo.map((group) => {
-      i = parseInt(i) + 1;
+      groupNum = parseInt(groupNum) + 1;
+      console.log(groupNum)
       return (
-        <QueryGroup num={i} active={true} groupInfo={group}/>
+        <QueryGroup num={groupNum} active={true} groupInfo={group}/>
       )
     })
 

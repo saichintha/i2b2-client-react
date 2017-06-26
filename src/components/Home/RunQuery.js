@@ -3,13 +3,16 @@ import Paper from 'material-ui/Paper';
 import {List, ListItem} from 'material-ui/List';
 import Search from 'material-ui/svg-icons/action/search';
 import Avatar from 'material-ui/Avatar';
-import {blue400, grey900, grey500, grey300, blue100, blue200, blue600} from 'material-ui/styles/colors';
+import {blue400, grey900, grey500, grey300, blue100, blue200, blue600, blue500} from 'material-ui/styles/colors';
 import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import {connect} from 'react-redux';
 import PatientDemographics from './PatientDemographics';
+import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryContainer } from 'victory';
+
 
 class RunQuery extends Component {
   constructor(props) {
@@ -23,12 +26,13 @@ class RunQuery extends Component {
   }
 
   processDemographics = (rawDemJSON) => {
-        var age = {}, lang = {}, race = {}, religion = {}, sex = {}, patientNum = 0;
+        var age = {}, lang = {}, race = {}, religion = {}, sex = {}, patientNum = 0, ageJSON = [];
         for (var i in rawDemJSON) {
             const dem = rawDemJSON[i];
            if (dem.concept_cd.includes('DEM|AGE')) {
                 const ageNum = dem.concept_cd.split(':')[1];
                 age[ageNum] = dem.count;
+                ageJSON.push({age: parseInt(ageNum), patients: parseInt(dem.count)});
            } else if (dem.concept_cd.includes('DEM|LANGUAGE')) {
                const langName = dem.concept_cd.split(':')[1];
                 lang[langName] = dem.count;
@@ -44,6 +48,7 @@ class RunQuery extends Component {
                patientNum += parseInt(dem.count);
            } 
         }
+        console.log('AgeJSON', ageJSON);
         var ageGroups = this.formatAges(age);
         this.setState({
             ages: ageGroups,
@@ -52,7 +57,8 @@ class RunQuery extends Component {
             religions: religion,
             languages: lang,
             patientNum: patientNum,
-            complete: true
+            complete: true,
+            ageJSON: ageJSON
         })
     }
 
@@ -117,12 +123,12 @@ class RunQuery extends Component {
       return (
         <div className="row center-xs" style={{marginTop: 20, minWidth: 540, display: 'block'}}>
           <div style={{marginTop: 20, marginBottom: 20}} className="row center-xs">
-            <FlatButton label="Search" primary={true} icon={<Search/>} backgroundColor={blue100} hoverColor={blue200} rippleColor={blue400} onTouchTap={this.handleRunQuery}/>
+            <RaisedButton label="Search" icon={<Search/>} backgroundColor={blue500} onTouchTap={this.handleRunQuery} labelStyle={{color: 'white'}}/>
           </div>
             
-          <div style={{padding: 32, borderRadius: 2, border: `1px solid ${blue600}`, marginTop: 20, marginBottom: 20, marginRight: '1.2em', marginLeft: '1.2em'}}>
+          <Paper style={{padding: 32, borderRadius: 2, marginTop: 40, marginBottom: 20, marginRight: '1.2em', marginLeft: '1.2em'}}>
               <div style={{minWidth: 540}} className="row center-xs">
-                <Paper style={{color: blue600, fontSize: 28, backgroundColor: 'transparent', margintLeft: 20}} zDepth={0}>
+                <Paper style={{color: blue600, fontSize: 28, margintLeft: 20}} zDepth={0}>
                   <div style={{padding: 10, borderRadius: 2, fontWeight: 400, fontFamily: 'Roboto'}}>
                     <strong style={{fontFamily: 'Roboto Mono'}}>{this.state.patientNum}</strong> <span style={{fontSize: 18}}>patients</span>
                   </div>
@@ -130,18 +136,38 @@ class RunQuery extends Component {
               </div>
 
               <div style={{marginTop: 20, minWidth: 540}} className="row center-xs">
-                  <Paper zDepth={0} style={{backgroundColor: 'transparent', display: 'block'}}>
+                  <Paper zDepth={0} style={{display: 'block'}}>
                     <PatientDemographics age={this.state.ages} race={this.state.races} gender={this.state.genders} religion={this.state.religions} lang={this.state.languages}/>
+                    <div style={{display: 'block'}}>
+                        <VictoryChart domainPadding={20} theme={VictoryTheme.material} width={450} height={350} containerComponent={<VictoryContainer width={300} height={200} style={{width: 'inherit', height: 'inherit'}} title={'Age'} domainPadding={20}/>}>
+                            {/*<VictoryAxis
+                            // tickValues specifies both the number of ticks and where
+                            // they are placed on the axis
+                            tickValues={[10,20,30,40,50,60,70,80,90]}
+                            tickFormat={["0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89"]}
+                            />
+                            <VictoryAxis
+                            dependentAxis
+                            // tickFormat specifies how ticks should be displayed
+                            tickFormat={(x) => (`$${x / 1000}k`)}
+                            />*/}
+                            <VictoryBar
+                            data={this.state.ageJSON}
+                            x="age"
+                            y="patients"
+                            />
+                        </VictoryChart>
+                </div>
                   </Paper>
               </div>
                 
-          </div>
+          </Paper>
         </div>
       );
     } else {
         return (
             <div className="row center-xs" style={{marginTop: 20, minWidth: 540}}>
-                <FlatButton label="Search" primary={true} icon={<Search/>} backgroundColor={blue100} hoverColor={blue200} rippleColor={blue400} onTouchTap={this.handleRunQuery}/>
+                <RaisedButton label="Search" icon={<Search/>} backgroundColor={blue500} onTouchTap={this.handleRunQuery}  labelStyle={{color: 'white'}}/>
             </div>
         );
     }

@@ -4,8 +4,10 @@ import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import Group from 'material-ui/svg-icons/social/group';
 import Paper from 'material-ui/Paper';
-import {blue500, grey900, grey400, grey700, grey300, blue100, blue800, green400, green600} from 'material-ui/styles/colors';
+import {blue500, grey900, grey400, grey700, grey300,grey100, blue100, blue800, green400, green600} from 'material-ui/styles/colors';
 import Arrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
+import DemIcon from 'material-ui/svg-icons/editor/pie-chart';
+import Chart from 'material-ui/svg-icons/editor/insert-chart';
 import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
 import Add from 'material-ui/svg-icons/content/add-circle';
@@ -13,6 +15,7 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import PatientDemographics from './PatientDemographics';
+import IconButton from 'material-ui/IconButton';
 
 import {connect} from 'react-redux';
 import * as actions from './../../redux/actions.js'
@@ -26,7 +29,7 @@ class SearchResult extends Component {
         dirColor: grey300,
         complete: true,
         demDiv: false,
-        demDone: false
+        demDone: false,
     }
 
   }
@@ -169,29 +172,41 @@ class SearchResult extends Component {
         this.props.closeSearch();
     }
 
+    handleEnter = () => {
+        this.setState({
+            listDisabled: true
+        });
+    }
+
+    handleLeave = () => {
+        this.setState({
+            listDisabled: false
+        })
+    }
+
   render() {
       var demDiv = (<div/>);
       if(this.state.demDiv){
         demDiv = (
-            <div>
+            <div style={{backgroundColor: grey100}}>
                 <PatientDemographics age={this.state.ages} race={this.state.races} gender={this.state.genders} religion={this.state.religions} lang={this.state.languages}/>
+                <Divider/>
             </div>
         );
       }
       if(this.state.complete){
-          var patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500}}> - </span>);
+          var patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500, fontFamily: 'Roboto Mono'}}> - </span>);
           if(this.state.patientNum){
-            patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500}}>{this.state.patientNum}</span>);
+            patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500, fontFamily: 'Roboto Mono'}}>{this.state.patientNum}</span>);
           }
             return (
                 <div>
-                    
-                    <ListItem primaryText={
-                        <Paper style={{display: 'inline-flex', backgroundColor:'transparent', width: '100%'}} zDepth={0}>
+                        <Paper style={{display: 'inline-flex', backgroundColor:'transparent', width: '100%', padding: 14}} zDepth={0}>
                             <div style={{display: 'inline-flex', marginRight: 20}} ref={(input) => { this.addButton = input; }}>
-                                    <Add color={green400} style={{cursor: 'pointer'}} hoverColor={green600}
-                                    onClick={() => {this.handleAdd()}}
-                                    />
+
+                                    <IconButton tooltip="Add to group" onTouchTap={this.handleAdd} style={{paddingLeft: 4, paddingRight: 4}}>
+                                        <Add color={green400}/>
+                                    </IconButton>
 
                                     <Popover
                                     open={this.state.addOpen}
@@ -210,28 +225,29 @@ class SearchResult extends Component {
                                     </Popover>
                             </div>
 
-                            <div style={{width: '87%'}}>
-                                <div style={{width: '87%', color: 'black', fontWeight: 500, display: 'inline-flex'}}>
+                            <div style={{width: '82%'}}>
+                                <div style={{width: '82%', color: 'black', fontWeight: 500, display: 'inline-flex'}}>
                                     {this.props.conceptName}
-                                    {/*<div style={{display: 'inline-flex', backgroundColor: green400, borderRadius: 2, padding: 3, marginLeft: 15, position: 'relative', bottom: 3, color: 'white', fontSize: 12}}>
-                                        ADD
-                                    </div>*/}
                                 </div>
-                                <div style={{fontSize: 12, color: grey700, marginTop: 4, width: '87%'}}>
+                                <div style={{fontSize: 12, color: grey700, marginTop: 4, width: '82%'}}>
                                     {/*{this.props.conceptDimcode.replace(/\\/g, " > ")}*/}
                                     {this.state.testPath}
                                 </div>
                             </div>
-                            <div style={{display: 'inline-flex', right: 50, bottom: 8, alignItems: 'center'}}>
-                                <Group style={{paddingRight: 16}} color={blue800}/>
+                            <div style={{display: 'inline-flex', right: 100, bottom: 8, alignItems: 'center'}}>
+                                {/*<IconButton tooltip="Patient Demographics" onTouchTap={this.getPatientDemInfo} style={{paddingRight: 6}} onMouseEnter={this.handleEnter} onMouseLeave={this.handleLeave}>
+                                    <DemIcon color={blue800} style={{padding: 0}}/>
+                                </IconButton>*/}
+                                <IconButton tooltip="View Demographics" onTouchTap={this.getPatientDemInfo} style={{marginRight: 6}} onMouseEnter={this.handleEnter} onMouseLeave={this.handleLeave}>
+                                    <Chart color={blue800}/>
+                                </IconButton>
+                                <div style={{display: 'inline-flex', marginRight:16}}>
                                     {patientNum}
+                                </div>
+                                {/*<Group style={{paddingRight: 16, paddingLeft: 12}} color={blue800}/>
+                                    {patientNum}*/}
                             </div>
                         </Paper>
-                    }
-                    style={{width: '100%'}}
-                    onTouchTap={this.handleAdd}
-                    />
-                
                     <Divider/>
 
                     <div>
