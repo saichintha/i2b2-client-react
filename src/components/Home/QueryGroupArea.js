@@ -28,16 +28,25 @@ class QueryGroupArea extends Component {
 
     if(groupState != []) {
         for (var i in groupState) {
-          console.log(groupState);
+          // console.log('GroupState',groupState);
+          // console.log('i', i, 'state[i]', groupState[i])
           const group = groupState[i];
-          groupInfo[group.groupNum-1].push(group.conceptInfo);
-          console.log('Group Info', groupInfo)
+          const conceptInfo = {
+            conceptName: group.conceptName,
+            conceptCode: group.conceptCode,
+            patientNum: group.patientNum,
+            elementID: group.elementID
+          }
+
+          groupInfo[group.groupNum-1].push(conceptInfo);
+          // console.log('Group Info', groupInfo)
         }
+        // console.log('Group Info', groupInfo)
     }
 
     queryGroups = groupInfo.map((group) => {
       groupNum = parseInt(groupNum) + 1;
-      console.log(groupNum)
+      // console.log('Group in map',group)
       return (
         <QueryGroup num={groupNum} active={true} groupInfo={group}/>
       )
