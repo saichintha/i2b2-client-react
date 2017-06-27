@@ -2,17 +2,21 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import {List, ListItem} from 'material-ui/List';
 import Search from 'material-ui/svg-icons/action/search';
+import Clear from 'material-ui/svg-icons/action/cached';
 import Avatar from 'material-ui/Avatar';
-import {blue400, grey900, grey500, grey300, blue100, blue200, blue600, blue500} from 'material-ui/styles/colors';
+import {blue400, grey900, grey500,grey800, grey300, blue100, blue200, blue600, blue500, blueGrey300} from 'material-ui/styles/colors';
 import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import Masonry from 'react-masonry-component';
+import FullQueryResult from './FullQueryResult';
 import {connect} from 'react-redux';
-import PatientDemographics from './PatientDemographics';
-import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryContainer } from 'victory';
+import * as actions from './../../redux/actions.js'
+import Divider from 'material-ui/Divider';
 
+import QueryResult from './QueryResult';
 
 class RunQuery extends Component {
   constructor(props) {
@@ -96,7 +100,7 @@ class RunQuery extends Component {
     if(groupState != []) {
         for (var i in groupState) {
           const group = groupState[i];
-          groupInfo[group.groupNum-1].push(group.conceptInfo.conceptCode);
+          groupInfo[group.groupNum-1].push(group.conceptCode);
         }
     }
 
@@ -118,56 +122,70 @@ class RunQuery extends Component {
         .catch((err) => console.log(err));
   }
 
+  handleResetGroups = () => {
+      var {dispatch} = this.props;
+      dispatch(actions.resetAllGroups());
+  }
+
   render() {
     if(this.state.complete){
       return (
         <div className="row center-xs" style={{marginTop: 20, minWidth: 540, display: 'block'}}>
           <div style={{marginTop: 20, marginBottom: 20}} className="row center-xs">
+              <RaisedButton label="Reset" icon={<Clear/>} backgroundColor={blueGrey300} onTouchTap={this.handleResetGroups} labelStyle={{color: 'white'}} style={{marginRight: 20}}/>
+
             <RaisedButton label="Search" icon={<Search/>} backgroundColor={blue500} onTouchTap={this.handleRunQuery} labelStyle={{color: 'white'}}/>
           </div>
-            
-          <Paper style={{padding: 32, borderRadius: 2, marginTop: 40, marginBottom: 20, marginRight: '1.2em', marginLeft: '1.2em'}}>
-              <div style={{minWidth: 540}} className="row center-xs">
-                <Paper style={{color: blue600, fontSize: 28, margintLeft: 20}} zDepth={0}>
-                  <div style={{padding: 10, borderRadius: 2, fontWeight: 400, fontFamily: 'Roboto'}}>
-                    <strong style={{fontFamily: 'Roboto Mono'}}>{this.state.patientNum}</strong> <span style={{fontSize: 18}}>patients</span>
-                  </div>
-                </Paper>
-              </div>
+    
+          <div className="row center-xs" style={{marginTop: 40, marginBottom: 40}}>
+            <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON}/>
+          </div>
 
-              <div style={{marginTop: 20, minWidth: 540}} className="row center-xs">
-                  <Paper zDepth={0} style={{display: 'block'}}>
-                    <PatientDemographics age={this.state.ages} race={this.state.races} gender={this.state.genders} religion={this.state.religions} lang={this.state.languages}/>
-                    <div style={{display: 'block'}}>
-                        <VictoryChart domainPadding={20} theme={VictoryTheme.material} width={450} height={350} containerComponent={<VictoryContainer width={300} height={200} style={{width: 'inherit', height: 'inherit'}} title={'Age'} domainPadding={20}/>}>
-                            {/*<VictoryAxis
-                            // tickValues specifies both the number of ticks and where
-                            // they are placed on the axis
-                            tickValues={[10,20,30,40,50,60,70,80,90]}
-                            tickFormat={["0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89"]}
-                            />
-                            <VictoryAxis
-                            dependentAxis
-                            // tickFormat specifies how ticks should be displayed
-                            tickFormat={(x) => (`$${x / 1000}k`)}
-                            />*/}
-                            <VictoryBar
-                            data={this.state.ageJSON}
-                            x="age"
-                            y="patients"
-                            />
-                        </VictoryChart>
-                </div>
-                  </Paper>
-              </div>
-                
-          </Paper>
+          <Divider style={{marginTop: 25, marginBottom: 8}}/>
+          <div style={{marginTop: 30, marginLeft: 15, fontSize: 20, color: grey800, fontFamily: 'Roboto'}}>
+                Previous Query Results
+            </div>
+            <div style={{marginTop: 25, marginBottom: 30}}>
+                <Masonry
+                elementType={'div'}
+                className={'queryResult'}
+                >
+                    <QueryResult/>
+                    <QueryResult/>
+                    <QueryResult/>
+                    <QueryResult/>
+                </Masonry>
+            </div>
+
         </div>
       );
     } else {
         return (
+            <div>
             <div className="row center-xs" style={{marginTop: 20, minWidth: 540}}>
+                <div>
+                    <RaisedButton label="Reset" icon={<Clear/>} backgroundColor={blueGrey300} onTouchTap={this.handleResetGroups} labelStyle={{color: 'white'}} style={{marginRight: 20}}/>
+
                 <RaisedButton label="Search" icon={<Search/>} backgroundColor={blue500} onTouchTap={this.handleRunQuery}  labelStyle={{color: 'white'}}/>
+                </div>
+            
+            </div>
+
+            
+            <div style={{marginTop: 30, marginLeft: 15, fontSize: 20, color: grey800, fontFamily: 'Roboto'}}>
+                Previous Query Results
+            </div>
+            <div style={{marginTop: 25, marginBottom: 30}}>
+                <Masonry
+                elementType={'div'}
+                className={'queryResult'}
+                >
+                    <QueryResult/>
+                    <QueryResult/>
+                    <QueryResult/>
+                    <QueryResult/>
+                </Masonry>
+            </div>
             </div>
         );
     }
