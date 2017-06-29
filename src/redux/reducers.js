@@ -23,3 +23,33 @@ export var conceptReducer = (state = [], action) => {
                 return state;
         };
 };
+
+export var queryNameReducer = (state = "", action) => {
+        switch (action.type) {
+            case 'UPDATE_QUERY_NAME':
+                return action.queryName;
+
+            default:
+                return state;
+        };
+};
+
+export var queryResultReducer = (state = [], action) => {
+        switch (action.type) {
+            case 'ADD_QUERY_RESULT':
+                return state.concat([action.queryResultPackage]);
+
+            default:
+                return state;
+        };
+};
+
+export var tabChange = (state = 0, action) => {
+        switch (action.type) {
+            case 'CHANGE_TAB':
+                return action.index;
+
+            default:
+                return state;
+        };
+};

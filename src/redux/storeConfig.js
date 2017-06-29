@@ -1,10 +1,13 @@
 import * as redux from 'redux';
-import {conceptReducer} from './reducers.js';
+import {conceptReducer, queryNameReducer, queryResultReducer, tabChange} from './reducers.js';
 import thunk from 'redux-thunk';
 
 export var configure = (initialState) => {
   var reducer = redux.combineReducers({
     groupInfo: conceptReducer,
+    queryName: queryNameReducer,
+    pastQueries: queryResultReducer,
+    activeTabIndex: tabChange
   });
 
   var store = redux.createStore(reducer, initialState, redux.compose(

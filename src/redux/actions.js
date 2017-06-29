@@ -21,3 +21,24 @@ export var resetAllGroups = () => {
         type: 'RESET_ALL_GROUPS'
     };
 };
+
+export var updateQueryName = (queryName) => {
+    return {
+        type: 'UPDATE_QUERY_NAME',
+        queryName
+    };
+};
+
+export var addQueryResult = (queryResultPackage) => {
+    return {
+        type: 'ADD_QUERY_RESULT',
+        queryResultPackage
+    };
+};
+
+export var changeTab = (index) => {
+    return {
+        type: 'CHANGE_TAB',
+        index
+    };
+};
