@@ -3,7 +3,7 @@ import Paper from 'material-ui/Paper';
 import {List, ListItem} from 'material-ui/List';
 import Search from 'material-ui/svg-icons/action/search';
 import Avatar from 'material-ui/Avatar';
-import {blue500, grey900, grey500, grey300, blue200} from 'material-ui/styles/colors';
+import {blue500, grey900, grey500, grey300, blue200, blue400, grey100} from 'material-ui/styles/colors';
 import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
@@ -24,7 +24,8 @@ class SearchBar extends Component {
       open: false,
       anchorEl: null,
       barWidth: null,
-      loading: false
+      loading: false,
+      searchBarColor: blue500
     }
 
     this.count = 1;
@@ -61,7 +62,7 @@ class SearchBar extends Component {
                     dataSource: resArray,
                     open: true
                 });
-                this.props.handleGroupPosition(this.state.open); 
+                // this.props.handleGroupPosition(this.state.open); 
             } else {
               this.setState({
                 dataSource: (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
@@ -69,7 +70,7 @@ class SearchBar extends Component {
                 </Paper>),
                 open: true
               })
-              this.props.handleGroupPosition(this.state.open);
+              // this.props.handleGroupPosition(this.state.open);
             }
             
           })
@@ -82,7 +83,7 @@ class SearchBar extends Component {
       this.setState({
         open: false
       });
-      this.props.handleGroupPosition(this.state.open);
+      // this.props.handleGroupPosition(this.state.open);
     };
 
     toggleSearch = () => {
@@ -101,7 +102,7 @@ class SearchBar extends Component {
     };
 
     componentDidMount (){
-      this.searchField.focus();
+      // this.searchField.focus();
       this.setState({
         barWidth: this.searchBar.offsetWidth,
         anchorEL: this.searchBar.getBoundingClientRect()
@@ -116,38 +117,47 @@ class SearchBar extends Component {
     }
 
     onFocus = () => {
+      console.log('focused');
       this.setState({
         open: true
       })
     }
 
+    // mouseEnter = () => {
+    //   this.setState({
+    //     searchBarColor: blue400
+    //   })
+    // }
+
+    // mouseLeave = () => {
+    //   this.setState({
+    //     searchBarColor: blue500
+    //   })
+    // }
+
   render() {
-
-    // var loadingBar = null;
-    // if(this.state.loading){
-    //   loadingBar = (<LinearProgress mode="indeterminate" />);
-    // 
-
-
     return (
-                <Paper style={{height: 56, minWidth: 500, borderRadius: 4}} zDepth={1}>
-                  <div ref={(input) => { this.searchBar = input; }}>
+                <Paper style={{height: 48, minWidth: 250, borderRadius: 4, display: 'flex', alignItems: 'center', backgroundColor: blue400, color: 'white'}} zDepth={0}>
+                  <div ref={(input) => { this.searchBar = input; }} style={{width: '100%'}}>
 
                   
-                  <div style={{display: 'inline-flex', position: 'relative', top: 11, marginLeft: 16, marginRight: 4}}>
-                    <Search color={blue500} style={{height: 30, width: 30}}/>
+                  <div style={{display: 'inline-flex', position: 'relative', top: 8, marginLeft: 16, marginRight: 4}}>
+                    <Search color={grey100} style={{height: 30, width: 30}}/>
                   </div>
-                  <div style={{display: 'inline-flex', width: 'calc(100% - 55px)'}}>
+                  <div style={{display: 'inline-flex', width: 'calc(100% - 80px)'}}>
                     
                     <TextField
                     hintText="Search for diagnoses, medications, lab tests, visit details etc..."
                     underlineStyle={{display: 'none'}}
-                    style={{height: 56, marginLeft: 20, width: 'inherit', cursor: 'text'}}
-                    hintStyle={{bottom: 14, width: 'inherit', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}
+                    style={{height: 56, marginLeft: 20, width: '100%', cursor: 'text', color: grey100}}
+                    hintStyle={{top: 11, width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: grey100}}
                     onChange={this.handleSearchText}
                     value={this.state.searchText}
                     onFocus={ this.onFocus }
+                    inputStyle={{height: 48, bottom: 2, color: grey100}}
                     ref={(input) => { this.searchField = input; }}
+                    onMouseEnter={this.mouseEnter}
+                    onMouseLeave={this.mouseLeave}
                     />
                             <Popover
                               open={this.state.open}
