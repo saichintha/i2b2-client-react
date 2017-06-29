@@ -5,44 +5,56 @@ import Avatar from 'material-ui/Avatar';
 import {blue500, grey900, grey500} from 'material-ui/styles/colors';
 import axios from 'axios';
 const apiURL = 'http://localhost:9000';
-import SearchBar from './Home/SearchBar';
+import PreviousQueries from './Home/PreviousQueries';
 import QueryGroupArea from './Home/QueryGroupArea';
 import RunQuery from './Home/RunQuery';
+import SwipeableViews from 'react-swipeable-views';
+import {connect} from 'react-redux';
+import * as actions from './../redux/actions.js'
+
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      marginValue: 0
+      slideIndex: 0
     }
   }
 
-  handleGroupPosition = (searchOpen) => {
-    // if(searchOpen){
-    //   this.setState({
-    //     marginValue: 420
-    //   });
-    // } else {
-    //   this.setState({
-    //     marginValue: 0
-    //   })
-    // }   
-  }
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
 
   render() {
     return (
           <div className="row center-xs">
-            <div className="col-xs-9" ref={(input) => { this.searchDiv = input; }}>
-                <SearchBar handleGroupPosition={this.handleGroupPosition}/>
-                <div style={{marginTop: this.state.marginValue}}>
-                  <QueryGroupArea/>                  
-                </div>
+            <div className="col-xs-10">
                 
+                <SwipeableViews index={this.props.activeTabIndex} slideStyle={{overflow: 'none'}}>
+                  <div style={{padding: 20}}>
+                    <QueryGroupArea/>
+                  </div>
+
+                  <div style={{padding: 20}}>
+                    <PreviousQueries/>
+                  </div>
+
+                  <div style={{padding:20, marginTop: 80}}>
+                    Searched Concepts Div. Coming soon.
+                  </div>
+                </SwipeableViews>
+
             </div>
           </div>
     );
   }
 }
 
-export default Dashboard;
+export default connect((state) => {
+  return {
+    activeTabIndex: state.activeTabIndex,
+  }
+})(Dashboard);
