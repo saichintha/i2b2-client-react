@@ -12,35 +12,20 @@ class QueryName extends Component {
     super(props);
 
     this.state = {
-        queryName: '',
+        queryName: null,
         groupState: props.groupState || []
     }
   }
 
-  processStateFromRedux = (groupState) => {
-    var groupInfo = [[],[],[]];
-    if(groupState != []) {
-        for (var i in groupState) {
-          const group = groupState[i];
-          groupInfo[group.groupNum-1].push(group.conceptCode);
-        }
+  handleValue = (event) => {
+    this.setState({
+        queryName: event.target.value
+    })
+  }
 
-        var queryGroups = [];
-        for (var i in groupInfo) {
-            if(groupInfo[i].length > 0){
-                queryGroups.push(groupInfo[i])
-            }
-        }
-
-        var queryName = ''
-        var fullGroupNames = queryGroups.toString().split(',');
-        for (var i in fullGroupNames) {
-            const groupName = fullGroupNames[i];
-            queryName += groupName.substring(0,4) + '.' + groupName.substring(groupName.length - 4)
-        }
-
-        return queryName
-    }
+  updateQueryNameRedux = (queryName) => {
+      var {dispatch} = this.props;
+      dispatch(actions.updateQueryName(queryName));
   }
 
   render() {
@@ -61,22 +46,28 @@ class QueryName extends Component {
         }
 
         var queryNameArray = [];
-        console.log(queryGroups);
+        // console.log(queryGroups);
         for (var j in queryGroups) {
             for (var k in queryGroups[j]) {
                 const name = queryGroups[j][k];
                 queryNameArray.push(name.substring(0,5));
+                // queryNameArray.push(name.split(" ")[0].replace(/,/g, '').replace(/\(|\)/g, ''));
             }
         }
         var queryName = queryNameArray.toString().replace(/,/g, '–');
     }
 
+    this.updateQueryNameRedux(this.state.queryName || queryName);
+
     return (
         <Paper zDepth={0} style={{backgroundColor: 'transparent', width: '100%', marginRight: '1em', marginLeft: '1em'}}>
             <TextField
-            value={queryName}
-            floatingLabelText="Query Name"
+            value={this.state.queryName || queryName}
+            hintText="Query Name"
+            hintStyle={{fontSize: 24}}
+            inputStyle={{fontSize: 24}}
             fullWidth={true}
+            onChange={this.handleValue}
             />          
         </Paper>
     );

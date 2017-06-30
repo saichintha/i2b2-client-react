@@ -15,7 +15,7 @@ import FullQueryResult from './FullQueryResult';
 import {connect} from 'react-redux';
 import * as actions from './../../redux/actions.js'
 import Divider from 'material-ui/Divider';
-
+import uuid from 'uuid/v4';
 import QueryResult from './QueryResult';
 
 class RunQuery extends Component {
@@ -25,7 +25,7 @@ class RunQuery extends Component {
     this.state = {
         groupInfo: this.props.groupInfo,
         patientNum: null,
-        complete: false,
+        complete: false
     }
   }
 
@@ -52,7 +52,7 @@ class RunQuery extends Component {
                patientNum += parseInt(dem.count);
            } 
         }
-        console.log('AgeJSON', ageJSON);
+        // console.log('AgeJSON', ageJSON);
         var ageGroups = this.formatAges(age);
         this.setState({
             ages: ageGroups,
@@ -61,9 +61,25 @@ class RunQuery extends Component {
             religions: religion,
             languages: lang,
             patientNum: patientNum,
+            ageJSON: ageJSON,
+            queryName: this.props.queryName,
             complete: true,
-            ageJSON: ageJSON
         })
+
+        var {dispatch} = this.props;
+        var queryResultPackage = {
+            ages: ageGroups,
+            races: race,
+            genders: sex,
+            religions: religion,
+            languages: lang,
+            patientNum: patientNum,
+            queryName: this.props.queryName,
+            queryConceptInfo: this.state.queryConceptInfo,
+            queryID: uuid(),
+            timeQueried: new Date()
+        };
+        dispatch(actions.addQueryResult(queryResultPackage))
     }
 
     formatAges = (ageJSON) => {
@@ -110,13 +126,17 @@ class RunQuery extends Component {
         queryGroups.push(groupInfo[i])
       }
     }
-    console.log(queryGroups)
+
+    this.setState({
+        queryConceptInfo: queryGroups
+    });
+    // console.log('Queryyy', queryGroups)
     axios.post(apiURL + '/api/groupQuery', {
             queryGroups: JSON.stringify(queryGroups)
         })
         .then((results) => {
           // const patients = result.data[0].array_length;
-          console.log(results.data);
+        //   console.log(results.data);
           this.processDemographics(results.data);
         })
         .catch((err) => console.log(err));
@@ -125,6 +145,9 @@ class RunQuery extends Component {
   handleResetGroups = () => {
       var {dispatch} = this.props;
       dispatch(actions.resetAllGroups());
+      this.setState({
+          complete: false
+      })
   }
 
   render() {
@@ -138,24 +161,8 @@ class RunQuery extends Component {
           </div>
     
           <div className="row center-xs" style={{marginTop: 40, marginBottom: 40}}>
-            <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON}/>
+            <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON} queryName={this.state.queryName}/>
           </div>
-
-          <Divider style={{marginTop: 25, marginBottom: 8}}/>
-          <div style={{marginTop: 30, marginLeft: 15, fontSize: 20, color: grey800, fontFamily: 'Roboto'}}>
-                Previous Query Results
-            </div>
-            <div style={{marginTop: 25, marginBottom: 30}}>
-                <Masonry
-                elementType={'div'}
-                className={'queryResult'}
-                >
-                    <QueryResult/>
-                    <QueryResult/>
-                    <QueryResult/>
-                    <QueryResult/>
-                </Masonry>
-            </div>
 
         </div>
       );
@@ -170,22 +177,6 @@ class RunQuery extends Component {
                 </div>
             
             </div>
-
-            
-            <div style={{marginTop: 30, marginLeft: 15, fontSize: 20, color: grey800, fontFamily: 'Roboto'}}>
-                Previous Query Results
-            </div>
-            <div style={{marginTop: 25, marginBottom: 30}}>
-                <Masonry
-                elementType={'div'}
-                className={'queryResult'}
-                >
-                    <QueryResult/>
-                    <QueryResult/>
-                    <QueryResult/>
-                    <QueryResult/>
-                </Masonry>
-            </div>
             </div>
         );
     }
@@ -194,6 +185,7 @@ class RunQuery extends Component {
 
 export default connect((state) => {
   return {
-    groupState: state.groupInfo
+    groupState: state.groupInfo,
+    queryName: state.queryName
   }
 })(RunQuery);

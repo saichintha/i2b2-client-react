@@ -16,37 +16,53 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import PatientDemographics from './PatientDemographics';
 import IconButton from 'material-ui/IconButton';
-
+import uuid from 'uuid/v4';
 import {connect} from 'react-redux';
 import * as actions from './../../redux/actions.js'
 
 class SearchResult extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-        patientNum: null,
-        testPath: null,
-        dirColor: grey300,
-        complete: true,
-        demDiv: false,
-        demDone: false,
-    }
 
+    if(this.props.past){
+        this.state = {
+            patientNum: this.props.patientNum,
+            testPath: null,
+            dirColor: grey300,
+            complete: true,
+            demDiv: false,
+            demDone: false,
+        }
+    } else {
+        this.state = {
+            patientNum: null,
+            testPath: null,
+            dirColor: grey300,
+            complete: false,
+            demDiv: false,
+            demDone: false,
+        }
+    }
+    
   }
 
    componentDidMount(){
         this.formatConceptPath();
-        axios.post(apiURL + '/api/usingBasecode', {
-            searchText: this.props.conceptCode
-        })
-        .then((response) => {
-            this.setState({
-                patientNum: response.data,
+        if(!this.props.past){
+            axios.post(apiURL + '/api/usingBasecode', {
+                searchText: this.props.conceptCode
             })
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .then((response) => {
+                this.setState({
+                    patientNum: response.data,
+                    complete: true
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+        
     }
 
     getPatientDemInfo = () => {
@@ -55,6 +71,7 @@ class SearchResult extends Component {
                 concept_basecode: this.props.conceptCode
             })
             .then((response) => {
+                // console.log(response)
                 this.processDemographics(response.data);
             })
         } else {
@@ -162,14 +179,31 @@ class SearchResult extends Component {
 
     handleAddToGroup = (event, menuItem, index) => {
         var {dispatch} = this.props;
-        dispatch(actions.addConceptToGroup(index+1, {
-            conceptName: this.props.conceptName,
-            conceptCode: this.props.conceptCode
-        }));
+        dispatch(actions.addConceptToGroup(index+1, 
+            this.props.conceptName,
+            this.props.conceptCode,
+            this.state.patientNum,
+            uuid()
+        ));
         this.setState({
             addOpen: false
         });
-        this.props.closeSearch();
+        if(!this.props.past){
+            this.props.closeSearch();
+        }
+        
+        if(!this.props.past){
+            var searchResultPackage = {
+                conceptName: this.props.conceptName,
+                conceptFullName: this.props.conceptFullName,
+                conceptCode: this.props.conceptCode,
+                conceptDimcode: this.props.conceptDimcode,
+                visual: this.props.visual,
+                patientNum: this.state.patientNum
+            }
+            dispatch(actions.addSearchResult(searchResultPackage))
+        }
+        
     }
 
     handleEnter = () => {
@@ -196,12 +230,12 @@ class SearchResult extends Component {
       }
       if(this.state.complete){
           var patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500, fontFamily: 'Roboto Mono'}}> - </span>);
-          if(this.state.patientNum){
+          if(this.state.patientNum != null){
             patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500, fontFamily: 'Roboto Mono'}}>{this.state.patientNum}</span>);
           }
             return (
-                <div>
-                        <Paper style={{display: 'inline-flex', backgroundColor:'transparent', width: '100%', padding: 14}} zDepth={0}>
+                <div style={{backgroundColor: 'white'}}>
+                        <Paper style={{display: 'inline-flex', backgroundColor: 'transparent', width: '100%', padding: 14}} zDepth={0}>
                             <div style={{display: 'inline-flex', marginRight: 20}} ref={(input) => { this.addButton = input; }}>
 
                                     <IconButton tooltip="Add to group" onTouchTap={this.handleAdd} style={{paddingLeft: 4, paddingRight: 4}}>
@@ -248,7 +282,7 @@ class SearchResult extends Component {
                                     {patientNum}*/}
                             </div>
                         </Paper>
-                    <Divider/>
+                    <Divider />
 
                     <div>
                            {demDiv} 

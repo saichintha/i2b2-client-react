@@ -10,6 +10,8 @@ import TextField from 'material-ui/TextField';
 import QueryGroup from './QueryGroup';
 import RunQuery from './RunQuery';
 import {connect} from 'react-redux';
+import QueryName from './QueryName';
+import AddGroup from './AddGroup';
 
 class QueryGroupArea extends Component {
   constructor(props) {
@@ -54,10 +56,14 @@ class QueryGroupArea extends Component {
 
     return (
               <div>
-                <div className="row center-xs" style={{height: 350, marginTop: 20, minWidth: 540}}>
+                <div className="row center-xs" style={{marginTop: 80, minWidth: 540}}>
+                  <QueryName />
+                </div>
+                <div className="row center-xs" style={{height: 350, minWidth: 540}}>
                         {queryGroups}
                     </div>
                 <RunQuery groupInfo={groupInfo}/>
+
               </div>
                     
     );

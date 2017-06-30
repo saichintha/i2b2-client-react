@@ -55,7 +55,7 @@ class SearchBar extends Component {
                 //   text: row.c_name,
                 //   value: (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname}/>),
                 // };
-                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++} closeSearch={that.toggleSearch}/>)
+                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++} closeSearch={that.toggleSearch} past={false}/>)
               });
 
                 this.setState({
@@ -117,44 +117,31 @@ class SearchBar extends Component {
     }
 
     onFocus = () => {
-      console.log('focused');
+      // console.log('focused');
       this.setState({
         open: true
       })
     }
-
-    // mouseEnter = () => {
-    //   this.setState({
-    //     searchBarColor: blue400
-    //   })
-    // }
-
-    // mouseLeave = () => {
-    //   this.setState({
-    //     searchBarColor: blue500
-    //   })
-    // }
-
   render() {
     return (
-                <Paper style={{height: 48, minWidth: 250, borderRadius: 4, display: 'flex', alignItems: 'center', backgroundColor: blue400, color: 'white'}} zDepth={0}>
+                <Paper style={{height: 48, minWidth: 250, borderRadius: 4, display: 'flex', alignItems: 'center', backgroundColor: this.props.barColor, color: 'white'}} zDepth={0}>
                   <div ref={(input) => { this.searchBar = input; }} style={{width: '100%'}}>
 
                   
                   <div style={{display: 'inline-flex', position: 'relative', top: 8, marginLeft: 16, marginRight: 4}}>
-                    <Search color={grey100} style={{height: 30, width: 30}}/>
+                    <Search color={this.props.barTextColor} style={{height: 30, width: 30}}/>
                   </div>
                   <div style={{display: 'inline-flex', width: 'calc(100% - 80px)'}}>
                     
                     <TextField
                     hintText="Search for diagnoses, medications, lab tests, visit details etc..."
                     underlineStyle={{display: 'none'}}
-                    style={{height: 56, marginLeft: 20, width: '100%', cursor: 'text', color: grey100}}
-                    hintStyle={{top: 11, width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: grey100}}
+                    style={{height: 56, marginLeft: 20, width: '100%', cursor: 'text', color: this.props.barTextColor}}
+                    hintStyle={{top: 11, width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: this.props.barTextColor}}
                     onChange={this.handleSearchText}
                     value={this.state.searchText}
                     onFocus={ this.onFocus }
-                    inputStyle={{height: 48, bottom: 2, color: grey100}}
+                    inputStyle={{height: 48, bottom: 2, color: this.props.barTextColor}}
                     ref={(input) => { this.searchField = input; }}
                     onMouseEnter={this.mouseEnter}
                     onMouseLeave={this.mouseLeave}

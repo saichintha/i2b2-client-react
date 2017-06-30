@@ -47,20 +47,21 @@ class QueryGroup extends Component {
     }
 
     if (this.props.groupInfo.length) {
-
+      
       var conceptDiv = this.props.groupInfo.map((concept) => {
+        // console.log('concept to group concept', concept);
         return (
-          <GroupConcept conceptName={concept.conceptName}/>
+          <GroupConcept conceptName={concept.conceptName} patientNum={concept.patientNum} elementID={concept.elementID}/>
         )
       })
       return (
         
           <div className="col-xs">
-            <Paper style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, height: '87%', marginRight: 0, marginLeft: 0}}>
+            <Paper style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, height: 315, marginRight: 0, marginLeft: 0, backgroundColor: 'white'}}>
               <div style={{paddingLeft: 20, paddingTop: 14, paddingBottom: 14,backgroundColor: this.state.divColor}}>
                   Group {this.props.num}
               </div>
-              <div style={{height: '82%', marginTop: 12, overflowY: 'auto'}} className="scrollbar">
+              <div style={{height: 273, overflowY: 'auto'}} className="scrollbar">
                   {conceptDiv}
               </div>
         </Paper>
@@ -70,12 +71,12 @@ class QueryGroup extends Component {
     } else {
       return (
         <div className="col-xs">
-        <Paper style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, height: '87%', marginRight: 0, marginLeft: 0}}>
+        <Paper style={{color: 'white', margin: 20, borderRadius: 2, opactity: 0.8, fontFamily: 'Roboto', fontSize: 14, paddingLeft: 0, paddingRight: 0, height: 315, marginRight: 0, marginLeft: 0, backgroundColor: 'white'}}>
           
               <div style={{paddingLeft: 20, paddingTop: 14, paddingBottom: 14,backgroundColor: this.state.divColor}}>
                   Group {this.props.num}
               </div>
-              <div style={{display: 'flex', alignItems: 'center', height: '87%', alignContent: 'center', justifyContent: 'center'}}>
+              <div style={{display: 'flex', alignItems: 'center', height: 273, alignContent: 'center', justifyContent: 'center'}}>
                     
               </div>
           
