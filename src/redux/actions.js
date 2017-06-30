@@ -36,6 +36,14 @@ export var addQueryResult = (queryResultPackage) => {
     };
 };
 
+export var addSearchResult = (searchResultPackage) => {
+    return {
+        type: 'ADD_SEARCH_RESULT',
+        searchResultPackage
+    };
+};
+
+
 export var changeTab = (index) => {
     return {
         type: 'CHANGE_TAB',

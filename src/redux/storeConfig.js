@@ -1,5 +1,5 @@
 import * as redux from 'redux';
-import {conceptReducer, queryNameReducer, queryResultReducer, tabChange} from './reducers.js';
+import {conceptReducer, queryNameReducer, queryResultReducer, tabChange, searchResultReducer} from './reducers.js';
 import thunk from 'redux-thunk';
 
 export var configure = (initialState) => {
@@ -7,6 +7,7 @@ export var configure = (initialState) => {
     groupInfo: conceptReducer,
     queryName: queryNameReducer,
     pastQueries: queryResultReducer,
+    pastConcepts: searchResultReducer,
     activeTabIndex: tabChange
   });
 

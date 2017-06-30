@@ -12,7 +12,7 @@ export var conceptReducer = (state = [], action) => {
             
             case 'REMOVE_CONCEPT':
                 return state.filter(concept => {
-                    console.log('Concept in filter', concept, 'elementID Given', action.elementID);
+                    // console.log('Concept in filter', concept, 'elementID Given', action.elementID);
                     return concept.elementID !== action.elementID;
                 });
 
@@ -37,7 +37,23 @@ export var queryNameReducer = (state = "", action) => {
 export var queryResultReducer = (state = [], action) => {
         switch (action.type) {
             case 'ADD_QUERY_RESULT':
-                return state.concat([action.queryResultPackage]);
+                return [
+                    action.queryResultPackage,
+                    ...state
+                ]
+
+            default:
+                return state;
+        };
+};
+
+export var searchResultReducer = (state = [], action) => {
+        switch (action.type) {
+            case 'ADD_SEARCH_RESULT':
+                return [
+                    action.searchResultPackage,
+                    ...state
+                ]
 
             default:
                 return state;
