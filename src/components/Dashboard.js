@@ -8,9 +8,11 @@ const apiURL = 'http://localhost:9000';
 import PreviousQueries from './Home/PreviousQueries';
 import QueryGroupArea from './Home/QueryGroupArea';
 import RunQuery from './Home/RunQuery';
+import PreviousSearchConcepts from './Home/PreviousSearchConcepts';
 import SwipeableViews from 'react-swipeable-views';
 import {connect} from 'react-redux';
 import * as actions from './../redux/actions.js'
+import AddGroup from './Home/AddGroup';
 
 
 class Dashboard extends Component {
@@ -32,21 +34,20 @@ class Dashboard extends Component {
     return (
           <div className="row center-xs">
             <div className="col-xs-10">
-                
                 <SwipeableViews index={this.props.activeTabIndex} slideStyle={{overflow: 'none'}}>
                   <div style={{padding: 20}}>
                     <QueryGroupArea/>
                   </div>
+                  
 
                   <div style={{padding: 20}}>
                     <PreviousQueries/>
                   </div>
 
                   <div style={{padding:20, marginTop: 80}}>
-                    Searched Concepts Div. Coming soon.
+                    <PreviousSearchConcepts />
                   </div>
                 </SwipeableViews>
-
             </div>
           </div>
     );
