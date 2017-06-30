@@ -37,9 +37,9 @@ class GroupConcept extends Component {
   }
 
   handleRemove = () => {
-    console.log('Remove');
+    // console.log('Remove');
     var {dispatch} = this.props;
-    console.log(this.props.elementID);
+    // console.log(this.props.elementID);
     dispatch(actions.removeConceptFromGroup(this.props.elementID))
   }
 

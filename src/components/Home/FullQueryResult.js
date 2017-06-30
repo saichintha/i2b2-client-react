@@ -16,7 +16,7 @@ class FullQueryResult extends Component {
     return (
         <div>
             <Card>
-                <CardTitle title="Query Name" titleStyle={{fontSize: 16, color: 'white'}} style={{backgroundColor: green400, paddingTop: 3, paddingBottom: 3}}/>
+                <CardTitle title={this.props.queryName} titleStyle={{fontSize: 20, color: 'white'}} style={{backgroundColor: green400, paddingTop: 8, paddingBottom: 8}}/>
                 <CardText style={{padding: 6, height: 100}}>
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 6, fontSize: 40, fontFamily: 'Roboto Mono', justifyContent: 'center', marginRight: 5, height: 'inherit', color: grey800}}>
                         <div>{this.props.patientNum}</div>

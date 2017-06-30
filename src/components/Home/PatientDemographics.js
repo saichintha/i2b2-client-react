@@ -38,13 +38,16 @@ class PatientDemographics extends Component {
         langDiv.push(<div style={{lineHeight: 1.8}}>{key.replace(/(^|\s)[a-z]/g,function(f){return f.toUpperCase()})} - {this.props.lang[key]}</div>)
     }
 
-
+    var titleDiv = (<h4 style={{fontFamily: 'Roboto'}}>Patient Set Demographics</h4> );
+    if(!this.props.showTitle){
+      titleDiv = (null)
+    }
     return (
             <Paper style={{display: 'inline-flex', backgroundColor: 'transparent', width: '100%', padding: 10, borderRadius: 0}} zDepth={0}>
                 <div style={{display: 'inline-flex', marginRight: 20, backgroundColor: 'transparent', width: 30}} />
                 <div style={{width: '100%'}}>
                     <div style={{width: '100%', color: 'black', fontWeight: 400, fontFamily: 'Roboto Mono', marginRight: 50}}>
-                            <h4 style={{fontFamily: 'Roboto'}}>Patient Set Demographics</h4> 
+                            {titleDiv}
 
                             <div style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10, marginRight: 14}}>
                               

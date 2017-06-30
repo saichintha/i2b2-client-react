@@ -12,7 +12,6 @@ import PreviousSearchConcepts from './Home/PreviousSearchConcepts';
 import SwipeableViews from 'react-swipeable-views';
 import {connect} from 'react-redux';
 import * as actions from './../redux/actions.js'
-import AddGroup from './Home/AddGroup';
 
 
 class Dashboard extends Component {

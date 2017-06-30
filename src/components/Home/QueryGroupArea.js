@@ -11,7 +11,6 @@ import QueryGroup from './QueryGroup';
 import RunQuery from './RunQuery';
 import {connect} from 'react-redux';
 import QueryName from './QueryName';
-import AddGroup from './AddGroup';
 
 class QueryGroupArea extends Component {
   constructor(props) {
