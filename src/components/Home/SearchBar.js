@@ -13,6 +13,29 @@ import MenuItem from 'material-ui/MenuItem';
 import AutoComplete from 'material-ui/AutoComplete';
 import SearchResult from './SearchResult';
 import LinearProgress from 'material-ui/LinearProgress';
+// console.log('Hierarchy', JSON.stringify((hierarchy)))
+
+var makeul = function(hierarchy, classname){
+    var dirs = Object.keys(hierarchy);
+    // console.log(dirs)
+    var ul = '<ul';
+    if(classname){
+        ul += ' class="' + classname + '"';
+    }
+    ul += '>\n';
+    dirs.forEach(function(dir){
+        var path = hierarchy[dir].path;
+        if(path){ // file
+            ul += '<li class="file" data-url="' + path + '">' + dir + '</li>\n';
+        }else{
+            ul += '<li class="folder">' + dir + '\n';
+            ul += makeul(hierarchy[dir]);
+            ul += '</li>\n';
+        }
+    });
+    ul += '</ul>\n';
+    return ul;
+};
 
 class SearchBar extends Component {
   constructor(props) {
@@ -31,13 +54,15 @@ class SearchBar extends Component {
     this.count = 1;
   }
 
+    
+
   handleSearchText = (e) => {
       const that = this;
       const searchText = e.target.value;
       this.setState({
           searchText: searchText
       });
-
+      // console.log('searchText – ', searchText)
       if(searchText.length >= 1){
           axios.post(apiURL + '/api/search', {
               searchText: searchText.toLowerCase()
@@ -46,15 +71,30 @@ class SearchBar extends Component {
           .then((response) => {
             if(response.data.length > 0){
 
-              // var resArray = response.data.map(function(row) {
-              //   return row.c_name.toString();
-              // });
+              var testFullName = response.data.map(function(path) {
+                // console.log(row.c_visualattributes);
+                  // path = path.replace(/\\/g, '/');
+                  // console.log(path)
+                  var editedPath = path.c_fullname.replace(/\\/g, '/').slice(0,-1);
+                  editedPath = editedPath.substring(0, editedPath.lastIndexOf('/')) + '/' + path.c_name;
+                  return editedPath;
+              });
+
+              var hierarchy = testFullName.reduce(function(hier,path){
+                  var x = hier;
+                  path.split('/').forEach(function(item){
+                      if(!x[item]){
+                          x[item] = {};
+                      }
+                      x = x[item];
+                  });
+                  x.path = path;
+                  return hier;
+              }, {});
+              console.log(hierarchy);
+              console.log(makeul(hierarchy, 'base-UL'));
 
               var resArray = response.data.map(function(row) {
-                // return {
-                //   text: row.c_name,
-                //   value: (<SearchResult conceptName={row.c_name} conceptDimcode={row.c_fullname}/>),
-                // };
                     return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++} closeSearch={that.toggleSearch} past={false}/>)
               });
 
@@ -62,7 +102,6 @@ class SearchBar extends Component {
                     dataSource: resArray,
                     open: true
                 });
-                // this.props.handleGroupPosition(this.state.open); 
             } else {
               this.setState({
                 dataSource: (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
@@ -70,7 +109,6 @@ class SearchBar extends Component {
                 </Paper>),
                 open: true
               })
-              // this.props.handleGroupPosition(this.state.open);
             }
             
           })
