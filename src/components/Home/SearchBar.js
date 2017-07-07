@@ -3,7 +3,7 @@ import Paper from 'material-ui/Paper';
 import {List, ListItem} from 'material-ui/List';
 import Search from 'material-ui/svg-icons/action/search';
 import Avatar from 'material-ui/Avatar';
-import {blue500, grey900, grey500, grey300, blue200, blue400, grey100} from 'material-ui/styles/colors';
+import {blue500, grey900,grey700, grey500, grey300, blue200, blue400, grey100} from 'material-ui/styles/colors';
 import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
@@ -15,9 +15,12 @@ import SearchResult from './SearchResult';
 import LinearProgress from 'material-ui/LinearProgress';
 import Divider from 'material-ui/Divider';
 import Hierarchy from 'material-ui/svg-icons/content/filter-list';
-import ListView from 'material-ui/svg-icons/action/view-list';
+import ListView from 'material-ui/svg-icons/action/list';
+import Expand from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import Collapse from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 import IconButton from 'material-ui/IconButton';
-import SortableTree from 'react-sortable-tree';
+import FlatButton from 'material-ui/FlatButton';
+import SortableTree, {toggleExpandedForAll} from 'react-sortable-tree';
 
 function toTreeData(tree) {
   return Object.keys(tree).map(function (title) {
@@ -50,7 +53,9 @@ class SearchBar extends Component {
       loading: false,
       searchBarColor: blue500,
       listView: true,
-      treeData: null
+      treeData: null,
+      expanded: false,
+      expandLabel: 'Expand'
     }
 
     this.count = 1;
@@ -124,11 +129,17 @@ class SearchBar extends Component {
 
     }
 
-    handleRequestClose = () => {
-      this.setState({
-        open: false
-      });
-      // this.props.handleGroupPosition(this.state.open);
+    _onMouseMove = (e) => {
+      this.setState({ x: e.clientX, y: e.clientY });
+    }
+
+    handleRequestClose = (e) => {
+      console.log(e);
+      if (this.state.y > 110 && e == 'clickAway'){
+          this.setState({
+            open: false
+          });
+      }
     };
 
     toggleSearch = () => {
@@ -153,6 +164,7 @@ class SearchBar extends Component {
         anchorEL: this.searchBar.getBoundingClientRect()
       });
       window.addEventListener("resize", this.updateDimensions);
+      document.addEventListener("mousemove", this._onMouseMove);
     }
 
     updateDimensions = () => {
@@ -169,101 +181,118 @@ class SearchBar extends Component {
     }
 
     handleListView = () => {
-      if (!this.state.listView) {
+      
         this.setState({
           listView: true
         })
-      }
+      
     }
 
     handleHierarchy = () => {
-      if(this.state.listView){
+      
         this.setState({
           listView: false
         })
-      }
+      
     }
-  render() {
-    var searchResultsView = (
-        <Popover
-          open={this.state.open}
-          anchorEl={this.searchBar}
-          style={{width: this.state.barWidth, marginTop: 10}}
-          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={this.handleRequestClose}
-        >
-          <div style={{maxHeight: 400, overflowY: 'auto', padding: 0, margin: 0, width:'100%', overflowX: 'hidden'}} className="scrollbar">
-             <Paper zDepth={0} style={{padding: 8, float: 'right', paddingRight: 20}}>
-                                      
-                                      
-                 <IconButton tooltip="List View" onTouchTap={this.handleListView}>
-                     <ListView color={grey500}/>
-                 </IconButton>
 
-                 <IconButton tooltip="Hierarchial View" onTouchTap={this.handleHierarchy}>
-                     <Hierarchy color={grey500}/>
-                 </IconButton>
-             </Paper>
-             <Divider />
-                 {this.state.dataSource}
-          </div>
-        </Popover>
-    );
+    expand = () => {
+      var label = "Collapse";
+      if(this.state.expanded){
+        label = 'Expand';
+      }
+      this.setState({
+        treeData: toggleExpandedForAll({
+          treeData: this.state.treeData,
+          expanded: !this.state.expanded,
+          expandLabel: label
+        }),
+        expanded: !this.state.expanded,
+        expandLabel: label
+      });
+
+    }
+
+  render() {
+    var searchResultsView = this.state.dataSource;
 
     if (!this.state.listView) {
       searchResultsView = (
-        <Popover
-            open={this.state.open}
-            anchorEl={this.searchBar}
-            style={{width: this.state.barWidth, marginTop: 10}}
-            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-            onRequestClose={this.handleRequestClose}
-          >
-            <div style={{height: 400, overflowY: 'auto', padding: 0, margin: 0, width:'100%', overflowX: 'hidden'}} className="scrollbar">
-              <Paper zDepth={0} style={{padding: 8, float: 'right', paddingRight: 20}}>
-                                        
-                                        
-                  <IconButton tooltip="List View" onTouchTap={this.handleListView}>
-                      <ListView color={grey500}/>
-                  </IconButton>
+        <div style={{height: 400}}>
 
-                  <IconButton tooltip="Hierarchial View" onTouchTap={this.handleHierarchy}>
-                      <Hierarchy color={grey500}/>
-                  </IconButton>
-              </Paper>
-              <Divider />
-                  <SortableTree treeData={this.state.treeData} onChange={treeData => this.setState({ treeData })} />
-            </div>
-          </Popover>
+            <div style={{display: 'flex', width: '100%', overflowX: 'hidden', overflowY: 'hidden', paddingTop: 6, paddingBottom: 6}}>
+                  <div style={{width: '85%', display: 'inline-flex',lineHeight: 1.4, paddingLeft: 12, alignItems: 'center', fontWeight: 600}}>
+                      Search Results Hierarchy
+                  </div>
+                  <div style={{display: 'inline-flex', alignItems: 'center',  justifyContent: 'flex-end'}}>
+                        
+                        <FlatButton label={this.state.expandLabel} onTouchTap={this.expand} style={{marginRight: 20}}/>
+                        
+                  </div>
+              </div>
+
+            <Divider />
+          
+          <div>
+            <SortableTree 
+          treeData={this.state.treeData}
+          onChange={treeData => this.setState({ treeData })}
+          canDrag={false}
+          rowHeight={48}
+          style={{fontFamily: 'Roboto', fontSize: 14, fontWeight: 400, paddingLeft: 16, paddingTop: 8}}
+          isVirtualized={false}
+          />
+          </div>
+          
+        </div>
       );
     }
 
       return (
                   <Paper style={{height: 48, minWidth: 250, borderRadius: 4, display: 'flex', alignItems: 'center', backgroundColor: this.props.barColor, color: 'white'}} zDepth={0}>
-                    <div ref={(input) => { this.searchBar = input; }} style={{width: '100%'}}>
+                    <div ref={(input) => { this.searchBar = input; }} style={{width: '100%'}} id="searchBarID">
 
                     
-                    <div style={{display: 'inline-flex', position: 'relative', top: 8, marginLeft: 16, marginRight: 4}}>
+                    <div style={{display: 'inline-flex', position: 'relative', top: 10, marginLeft: 16, marginRight: 4}}>
                       <Search color={this.props.barTextColor} style={{height: 30, width: 30}}/>
                     </div>
-                    <div style={{display: 'inline-flex', width: 'calc(100% - 80px)'}}>
+                    <div style={{display: 'inline-flex', width: 'calc(100% - 65px)'}}>
                       
                       <TextField
                       hintText="Search for diagnoses, medications, lab tests, visit details etc..."
                       underlineStyle={{display: 'none'}}
-                      style={{height: 56, marginLeft: 20, width: '100%', cursor: 'text', color: this.props.barTextColor}}
-                      hintStyle={{top: 11, width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: this.props.barTextColor}}
+                      style={{height: 56, marginLeft: 20, width: '80%', cursor: 'text', color: this.props.barTextColor}}
+                      hintStyle={{top: 12, width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: this.props.barTextColor}}
                       onChange={this.handleSearchText}
                       value={this.state.searchText}
-                      onFocus={ this.onFocus }
+                      onFocus={this.onFocus}
                       inputStyle={{height: 48, bottom: 2, color: this.props.barTextColor}}
                       ref={(input) => { this.searchField = input; }}
                       onMouseEnter={this.mouseEnter}
                       onMouseLeave={this.mouseLeave}
                       />
-                              {searchResultsView}
+                      <IconButton onTouchTap={this.handleListView} >
+                          <ListView color={this.props.barTextColor}/>
+                      </IconButton>
+
+                      <IconButton onTouchTap={this.handleHierarchy}>
+                          <Hierarchy color={this.props.barTextColor}/>
+                      </IconButton>
+                          
+                          <Popover
+                          open={this.state.open}
+                          anchorEl={this.searchBar}
+                          style={{width: this.state.barWidth, marginTop: 10}}
+                          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                          onRequestClose={this.handleRequestClose}
+                          useLayerForClickAway={false}
+                          autoCloseWhenOffScreen={false}
+                        >
+                          <div style={{maxHeight: 400, overflowY: 'auto', padding: 0, margin: 0, width:'100%', overflowX: 'hidden'}} className="scrollbar" id="popover">
+                                {searchResultsView}
+                          </div>
+                        </Popover>
                           
                     </div>
                     </div>
