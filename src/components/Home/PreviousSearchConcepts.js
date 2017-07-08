@@ -13,12 +13,10 @@ import * as actions from './../../redux/actions.js'
 class PreviousSearchConcepts extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
         queryName: null,
         groupState: props.groupState || []
     }
-
     this.count = 1;
   }
 

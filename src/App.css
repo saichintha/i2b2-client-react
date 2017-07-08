@@ -54,6 +54,7 @@ blockquote {
 .scrollbar::-webkit-scrollbar
 {
 	width: 6px;
+  height: 6px;
 	background-color: #EEEEEE;
 }
 
@@ -129,4 +130,28 @@ blockquote {
   height: 1em;
   margin-top: 0.2em;
   background: white;
+}
+
+
+.rst__rowContents {
+  box-shadow: none;
+  border-radius: 4px;
+}
+
+.rst__rowTitle {
+  font-weight: 500;
+}
+
+.rst__rowSearchMatch {
+  border: 3px solid #2196F3;
+  border-radius: 7px;
+  color: #1976D2;
+  outline: none;
+}
+
+.rst__rowSearchFocus {
+  border: 3px solid #66BB6A;
+  border-radius: 7px;
+  color: #388E3C;
+  outline: none;
 }

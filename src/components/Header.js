@@ -47,7 +47,7 @@ class Header extends Component {
                   <div className="col-xs-2" style={{paddingLeft: 60, fontWeight: 400, color: textColor}}>
                       i2b2
                   </div>
-                  <div className="col-xs-7">
+                  <div className="col-xs-7" style={{paddingTop: 6}}>
                       <SearchBar barColor={barColor} barTextColor={barTextColor}/>
                   </div>
               </div>

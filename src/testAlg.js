@@ -96,29 +96,29 @@ var hierarchy = testArray.reduce(function(hier,path){
 
 console.log('Hierarchy', JSON.stringify((hierarchy)))
 
-var makeul = function(hierarchy, classname){
-    var dirs = Object.keys(hierarchy);
-    console.log(dirs)
-    var ul = '<ul';
-    if(classname){
-        ul += ' class="' + classname + '"';
-    }
-    ul += '>\n';
-    dirs.forEach(function(dir){
-        var path = hierarchy[dir].path;
-        if(path){ // file
-            ul += '<li class="file" data-url="' + path + '">' + dir + '</li>\n';
-        }else{
-            ul += '<li class="folder">' + dir + '\n';
-            ul += makeul(hierarchy[dir]);
-            ul += '</li>\n';
-        }
-    });
-    ul += '</ul>\n';
-    return ul;
-};
+// var makeul = function(hierarchy, classname){
+//     var dirs = Object.keys(hierarchy);
+//     console.log(dirs)
+//     var ul = '<ul';
+//     if(classname){
+//         ul += ' class="' + classname + '"';
+//     }
+//     ul += '>\n';
+//     dirs.forEach(function(dir){
+//         var path = hierarchy[dir].path;
+//         if(path){ // file
+//             ul += '<li class="file" data-url="' + path + '">' + dir + '</li>\n';
+//         }else{
+//             ul += '<li class="folder">' + dir + '\n';
+//             ul += makeul(hierarchy[dir]);
+//             ul += '</li>\n';
+//         }
+//     });
+//     ul += '</ul>\n';
+//     return ul;
+// };
 
-console.log(makeul(hierarchy, 'base-UL'));
+// console.log(makeul(hierarchy, 'base-UL'));
 
 // var filePaths = testArray.map((path) => {
 //     return parsePath(path.replace('\\', '/'));

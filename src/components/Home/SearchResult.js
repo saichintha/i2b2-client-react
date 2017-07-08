@@ -24,45 +24,32 @@ class SearchResult extends Component {
   constructor(props) {
     super(props);
 
-    if(this.props.past){
-        this.state = {
-            patientNum: this.props.patientNum,
-            testPath: null,
-            dirColor: grey300,
-            complete: true,
-            demDiv: false,
-            demDone: false,
-        }
-    } else {
-        this.state = {
-            patientNum: null,
-            testPath: null,
-            dirColor: grey300,
-            complete: false,
-            demDiv: false,
-            demDone: false,
-        }
+    this.state = {
+        patientNum: this.props.patientNum,
+        testPath: null,
+        dirColor: grey300,
+        complete: true,
+        demDiv: false,
+        demDone: false,
     }
-    
   }
 
    componentDidMount(){
         this.formatConceptPath();
-        if(!this.props.past){
-            axios.post(apiURL + '/api/usingBasecode', {
-                searchText: this.props.conceptCode
-            })
-            .then((response) => {
-                this.setState({
-                    patientNum: response.data,
-                    complete: true
-                })
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        }
-        
+        // if(!this.props.past){
+        //     axios.post(apiURL + '/api/usingBasecode', {
+        //         searchText: this.props.conceptCode
+        //     })
+        //     .then((response) => {
+        //         this.setState({
+        //             patientNum: response.data,
+        //             complete: true
+        //         })
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
+        // }
     }
 
     getPatientDemInfo = () => {
