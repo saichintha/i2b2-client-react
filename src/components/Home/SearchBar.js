@@ -28,7 +28,6 @@ function toTreeData(tree) {
     if (Object.keys(tree[title]).length > 0) {
       o.children = toTreeData(tree[title]);
     }
-
     return o;
   });
 }
@@ -55,7 +54,10 @@ class SearchBar extends Component {
       listView: true,
       treeData: null,
       expanded: false,
-      expandLabel: 'Expand'
+      expandLabel: 'Expand',
+      searchString: '',
+      searchFocusIndex: 0,
+      searchFoundCount: null
     }
 
     this.count = 1;
@@ -71,7 +73,7 @@ class SearchBar extends Component {
       });
       // console.log('searchText – ', searchText)
       if(searchText.length >= 1){
-          axios.post(apiURL + '/api/search', {
+          axios.post(apiURL + '/api/awesome', {
               searchText: searchText.toLowerCase()
           })
 
@@ -79,7 +81,7 @@ class SearchBar extends Component {
             if(response.data.length > 0){
 
               var resArray = response.data.map(function(row) {
-                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} visual={row.c_visualattributes} conceptCode={row.c_basecode} conceptDimcode={row.c_dimcode}key={that.count++} closeSearch={that.toggleSearch} past={false}/>)
+                    return (<SearchResult conceptName={row.c_name} conceptFullName={row.c_fullname} conceptCode={row.c_basecode} conceptDimcode={row.c_basecode} patientNum={row.patient_num} key={that.count++} closeSearch={that.toggleSearch} past={false}/>)
               });
 
                 this.setState({
@@ -93,6 +95,8 @@ class SearchBar extends Component {
                   // console.log(path)
                     var editedPath = path.c_fullname.replace(/\\/g, '/').slice(0,-1);
                     editedPath = editedPath.substring(0, editedPath.lastIndexOf('/')) + '/' + path.c_name;
+                    editedPath = editedPath.replace(/\([0-9]\)/g, '');
+                    editedPath += ' – ' + path.patient_num;
                     return editedPath;
                 });
 
@@ -110,9 +114,10 @@ class SearchBar extends Component {
                 });
 
                 var treeData = toTreeData(tree);
-                console.log('Tree for ' + searchText , treeData);
                 this.setState({
-                  treeData: treeData
+                  treeData: treeData,
+                  expanded: false,
+                  expandLabel: 'Expand',
                 })
             } else {
               this.setState({
@@ -134,8 +139,8 @@ class SearchBar extends Component {
     }
 
     handleRequestClose = (e) => {
-      console.log(e);
-      if (this.state.y > 110 && e == 'clickAway'){
+      // console.log(e);
+      if (this.state.y > 55 && e == 'clickAway'){
           this.setState({
             open: false
           });
@@ -215,14 +220,47 @@ class SearchBar extends Component {
 
   render() {
     var searchResultsView = this.state.dataSource;
+    const {
+      treeData,
+      searchString,
+      searchFocusIndex,
+      searchFoundCount,
+    } = this.state;
 
     if (!this.state.listView) {
+      const selectPrevMatch = () =>
+      this.setState({
+        searchFocusIndex: searchFocusIndex !== null
+          ? (searchFoundCount + searchFocusIndex - 1) % searchFoundCount
+          : searchFoundCount - 1,
+      });
+
+    const selectNextMatch = () =>
+      this.setState({
+        searchFocusIndex: searchFocusIndex !== null
+          ? (searchFocusIndex + 1) % searchFoundCount
+          : 0,
+      });
+
       searchResultsView = (
         <div style={{height: 400}}>
 
             <div style={{display: 'flex', width: '100%', overflowX: 'hidden', overflowY: 'hidden', paddingTop: 6, paddingBottom: 6}}>
-                  <div style={{width: '85%', display: 'inline-flex',lineHeight: 1.4, paddingLeft: 12, alignItems: 'center', fontWeight: 600}}>
+                  <div style={{width: '85%', display: 'inline-flex',lineHeight: 1.4, paddingLeft: 24, alignItems: 'center', fontWeight: 600}}>
                       Search Results Hierarchy
+                      <Paper zDepth={0} style={{marginLeft: 'auto', marginRight: 'auto', backgroundColor: grey300, borderRadius: 4, padding: 4, height: 36, display: 'flex', alignItems: 'center'}}>
+                        <TextField
+                        hintText="Search term"
+                        hintStyle={{fontWeight: 400, color: grey700}}
+                        inputStyle={{fontWeight: 400, color: grey900}}
+                        value={this.state.searchString}
+                        onChange={event =>
+                          this.setState({ searchString: event.target.value })}
+                        style={{marginLeft: 'auto', marginRight: 'auto', color: grey900, paddingLeft: 15, paddingRight: 15, minWidth: 330}}
+                        underlineStyle={{display: 'none'}}
+                        />
+                      </Paper>
+                      
                   </div>
                   <div style={{display: 'inline-flex', alignItems: 'center',  justifyContent: 'flex-end'}}>
                         
@@ -233,14 +271,23 @@ class SearchBar extends Component {
 
             <Divider />
           
-          <div>
+          <div style={{height: 330}} className="scrollbar">
             <SortableTree 
           treeData={this.state.treeData}
           onChange={treeData => this.setState({ treeData })}
           canDrag={false}
           rowHeight={48}
           style={{fontFamily: 'Roboto', fontSize: 14, fontWeight: 400, paddingLeft: 16, paddingTop: 8}}
-          isVirtualized={false}
+          isVirtualized={true}
+          searchQuery={searchString}
+          searchFocusOffset={searchFocusIndex}
+          searchFinishCallback={matches =>
+                this.setState({
+                  searchFoundCount: matches.length,
+                  searchFocusIndex: matches.length > 0
+                    ? searchFocusIndex % matches.length
+                    : 0,
+                })}
           />
           </div>
           
@@ -259,14 +306,14 @@ class SearchBar extends Component {
                     <div style={{display: 'inline-flex', width: 'calc(100% - 65px)'}}>
                       
                       <TextField
-                      hintText="Search for diagnoses, medications, lab tests, visit details etc..."
+                      hintText="Search diagnoses, medications, lab tests, visit details etc..."
                       underlineStyle={{display: 'none'}}
                       style={{height: 56, marginLeft: 20, width: '80%', cursor: 'text', color: this.props.barTextColor}}
                       hintStyle={{top: 12, width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: this.props.barTextColor}}
                       onChange={this.handleSearchText}
                       value={this.state.searchText}
                       onFocus={this.onFocus}
-                      inputStyle={{height: 48, bottom: 2, color: this.props.barTextColor}}
+                      inputStyle={{height: 48, color: this.props.barTextColor}}
                       ref={(input) => { this.searchField = input; }}
                       onMouseEnter={this.mouseEnter}
                       onMouseLeave={this.mouseLeave}
@@ -289,7 +336,7 @@ class SearchBar extends Component {
                           useLayerForClickAway={false}
                           autoCloseWhenOffScreen={false}
                         >
-                          <div style={{maxHeight: 400, overflowY: 'auto', padding: 0, margin: 0, width:'100%', overflowX: 'hidden'}} className="scrollbar" id="popover">
+                          <div style={{maxHeight: 400, overflowY: 'auto', padding: 0, margin: 0, width:'100%', overflowX: 'auto'}} className="scrollbar" id="popover">
                                 {searchResultsView}
                           </div>
                         </Popover>
