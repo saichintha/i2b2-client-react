@@ -19,6 +19,8 @@ import IconButton from 'material-ui/IconButton';
 import uuid from 'uuid/v4';
 import {connect} from 'react-redux';
 import * as actions from './../../redux/actions.js'
+import Hierarchy from 'material-ui/svg-icons/content/filter-list';
+import HierarchyView from './HierarchyView';
 
 class SearchResult extends Component {
   constructor(props) {
@@ -31,25 +33,12 @@ class SearchResult extends Component {
         complete: true,
         demDiv: false,
         demDone: false,
+        treeDiv: false
     }
   }
 
    componentDidMount(){
         this.formatConceptPath();
-        // if(!this.props.past){
-        //     axios.post(apiURL + '/api/usingBasecode', {
-        //         searchText: this.props.conceptCode
-        //     })
-        //     .then((response) => {
-        //         this.setState({
-        //             patientNum: response.data,
-        //             complete: true
-        //         })
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-        // }
     }
 
     getPatientDemInfo = () => {
@@ -97,7 +86,8 @@ class SearchResult extends Component {
             religions: religion,
             languages: lang,
             demDone: true,
-            demDiv: true
+            demDiv: true,
+            treeDiv: false
         })
     }
 
@@ -175,9 +165,6 @@ class SearchResult extends Component {
         this.setState({
             addOpen: false
         });
-        if(!this.props.past){
-            this.props.closeSearch();
-        }
         
         if(!this.props.past){
             var searchResultPackage = {
@@ -193,20 +180,16 @@ class SearchResult extends Component {
         
     }
 
-    handleEnter = () => {
+    viewHierarchy = () => {
         this.setState({
-            listDisabled: true
-        });
-    }
-
-    handleLeave = () => {
-        this.setState({
-            listDisabled: false
+            treeDiv: !this.state.treeDiv,
+            demDiv: false
         })
     }
 
   render() {
       var demDiv = (<div/>);
+      var treeDiv = (<div/>);
       if(this.state.demDiv){
         demDiv = (
             <div style={{backgroundColor: grey100}}>
@@ -214,6 +197,14 @@ class SearchResult extends Component {
                 <Divider/>
             </div>
         );
+      }
+      if(this.state.treeDiv){
+          treeDiv = (
+              <div style={{backgroundColor: grey100}}>
+                <HierarchyView searchTerm={this.props.conceptName}/>
+                <Divider/>
+            </div>
+          )
       }
       if(this.state.complete){
           var patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500, fontFamily: 'Roboto Mono'}}> - </span>);
@@ -259,8 +250,12 @@ class SearchResult extends Component {
                                 {/*<IconButton tooltip="Patient Demographics" onTouchTap={this.getPatientDemInfo} style={{paddingRight: 6}} onMouseEnter={this.handleEnter} onMouseLeave={this.handleLeave}>
                                     <DemIcon color={blue800} style={{padding: 0}}/>
                                 </IconButton>*/}
-                                <IconButton tooltip="View Demographics" onTouchTap={this.getPatientDemInfo} style={{marginRight: 6}} onMouseEnter={this.handleEnter} onMouseLeave={this.handleLeave}>
+                                
+                                <IconButton tooltip="View Demographics" onTouchTap={this.getPatientDemInfo} style={{marginRight: 6}} onMouseEnter={this.handleEnter} onMouseLeave={this.handleLeave} touch={true}>
                                     <Chart color={blue800}/>
+                                </IconButton>
+                                <IconButton tooltip="View In Hierarchy" onTouchTap={this.viewHierarchy} style={{marginRight: 6}} onMouseEnter={this.handleEnter} onMouseLeave={this.handleLeave} touch={true}>
+                                    <Hierarchy color={blue800}/>
                                 </IconButton>
                                 <div style={{display: 'inline-flex', marginRight:16}}>
                                     {patientNum}
@@ -274,6 +269,8 @@ class SearchResult extends Component {
                     <div>
                            {demDiv} 
                     </div>
+
+                        {treeDiv}
 
                 </div> 
                 
