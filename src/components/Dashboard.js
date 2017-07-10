@@ -12,7 +12,7 @@ import PreviousSearchConcepts from './Home/PreviousSearchConcepts';
 import SwipeableViews from 'react-swipeable-views';
 import {connect} from 'react-redux';
 import * as actions from './../redux/actions.js'
-
+import SearchMain from './SearchMain';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -30,6 +30,8 @@ class Dashboard extends Component {
   };
 
   render() {
+    var {activeTabIndex, searchActive} = this.props;
+    if(!searchActive){
     return (
           <div className="row center-xs">
             <div className="col-xs-10">
@@ -50,11 +52,17 @@ class Dashboard extends Component {
             </div>
           </div>
     );
+    } else {
+      return (
+        <SearchMain />
+      )
+    }
   }
 }
 
 export default connect((state) => {
   return {
     activeTabIndex: state.activeTabIndex,
+    searchActive: state.searchActive
   }
 })(Dashboard);
