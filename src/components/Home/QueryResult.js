@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
-import PatientDemographics from './PatientDemographics';
+import PatientDemographics from '../Search/PatientDemographics';
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryContainer } from 'victory';
 import {blue400, grey900, grey500,grey800, grey300, green400, green500, blue200, blue600, blue500, blueGrey300, amber700} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';

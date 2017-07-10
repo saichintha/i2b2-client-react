@@ -12,6 +12,7 @@
     "react-dom": "^15.5.3",
     "react-element-pan": "^1.0.9",
     "react-masonry-component": "^5.0.7",
+    "react-pan-zoom-element": "^2.0.1",
     "react-redux": "^5.0.4",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",

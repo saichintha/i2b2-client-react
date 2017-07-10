@@ -1,5 +1,5 @@
 html,body {
-  background-color: #f4f4f4 !important;
+  background-color: #eeeeee !important;
   
 }
 
@@ -145,13 +145,34 @@ blockquote {
 .rst__rowSearchMatch {
   border: 3px solid #2196F3;
   border-radius: 7px;
-  color: #1976D2;
   outline: none;
 }
 
 .rst__rowSearchFocus {
   border: 3px solid #66BB6A;
   border-radius: 7px;
-  color: #388E3C;
   outline: none;
 }
+
+.rst__rowWrapper {
+  padding: 3px 3px 3px 0px;
+}
+
+.rst__expandButton {
+  width: 10px;
+  height: 12px;
+  outline: 0;
+}
+
+.rst__collapseButton {
+  width: 10px;
+  height: 12px;
+  outline: 0;
+}
+
+.rst__collapseButton:hover:not(:active), .rst__expandButton:hover:not(:active) {
+  width: 16px;
+  height: 16px;
+}
+
+button:focus {outline:0;}

@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import Masonry from 'react-masonry-component';
 import QueryResult from './QueryResult';
 import Empty from 'material-ui/svg-icons/action/list';
-import SearchResult from './SearchResult';
+import SearchResult from '../Search/SearchResult';
 import {connect} from 'react-redux';
 import * as actions from './../../redux/actions.js'
 
