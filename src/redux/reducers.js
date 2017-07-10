@@ -69,3 +69,26 @@ export var tabChange = (state = 0, action) => {
                 return state;
         };
 };
+
+export var searchActiveReducer = (state = false, action) => {
+        switch (action.type) {
+            case 'SEARCH_ACTIVE':
+                return true;
+            
+            case 'MAIN_ACTIVE':
+                return false;
+                
+            default:
+                return state;
+        };
+};
+
+export var treeDataReducer = (state = {}, action) => {
+        switch (action.type) {
+            case 'UPDATE_TREE_DATA':
+                return action.treeData;
+            
+            default:
+                return state;
+        };
+};

@@ -50,3 +50,22 @@ export var changeTab = (index) => {
         index
     };
 };
+
+export var toSearch = () => {
+    return {
+        type: 'SEARCH_ACTIVE'
+    };
+};
+
+export var toMain = () => {
+    return {
+        type: 'MAIN_ACTIVE'
+    };
+};
+
+export var updateTreeData = (treeData) => {
+    return {
+        type: 'UPDATE_TREE_DATA',
+        treeData
+    };
+};
