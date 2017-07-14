@@ -26,6 +26,7 @@ class Header extends Component {
 
   handleBack = () => {
     var {dispatch} = this.props;
+    dispatch(actions.changeTab(0));
     dispatch(actions.toMain());
   }
 
@@ -38,7 +39,7 @@ class Header extends Component {
         <AppBar
           title={
               <div className="row center-xs" style={{alignItems: 'center', flexWrap: 'wrap',}}>
-                  <div className="col-xs-8">
+                  <div className="col-xs-8" style={{marginRight: '2em'}}>
                       <SearchBar barColor={blue400} barTextColor={grey100}/>
                   </div>
               </div>
@@ -74,9 +75,8 @@ class Header extends Component {
                   <div className="col-xs-2" style={{paddingLeft: 60, fontWeight: 400, color: textColor}}>
                       i2b2
                   </div>
-                  <div className="col-xs-7" style={{paddingTop: 6}}>
-                      {/*<SearchBar barColor={barColor} barTextColor={barTextColor}/>*/}
-                      <FakeSearchBar/>
+                  <div className="col-xs-8" style={{paddingTop: 6}}>
+                      <FakeSearchBar barColor={barColor} barTextColor={barTextColor}/>
                   </div>
               </div>
 

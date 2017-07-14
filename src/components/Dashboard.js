@@ -37,7 +37,7 @@ class Dashboard extends Component {
             <div className="col-xs-10">
                 <SwipeableViews index={this.props.activeTabIndex} slideStyle={{overflow: 'none'}}>
                   <div style={{padding: 20, marginTop: 80, paddingTop: 0}}>
-                    <QueryGroupArea/>
+                    <QueryGroupArea mainDashboard={true}/>
                   </div>
                   
 
