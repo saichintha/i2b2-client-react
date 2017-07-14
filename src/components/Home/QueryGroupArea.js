@@ -49,20 +49,29 @@ class QueryGroupArea extends Component {
       groupNum = parseInt(groupNum) + 1;
       // console.log('Group in map',group)
       return (
-        <QueryGroup num={groupNum} active={true} groupInfo={group}/>
+        <QueryGroup num={groupNum} active={true} groupInfo={group} mainDashboard={this.props.mainDashboard}/>
       )
     })
 
+    var queryName = (null);
+    var runQuery = (null);
+    if (this.props.mainDashboard) {
+      queryName = (
+        <div className="row center-xs" style={{marginTop: 80, minWidth: 540}}>
+            <QueryName />
+        </div>
+      )
+      runQuery = (<RunQuery groupInfo={groupInfo}/>)
+    }
+
     return (
               <div>
-                <div className="row center-xs" style={{marginTop: 80, minWidth: 540}}>
-                  <QueryName />
-                </div>
+                {queryName}
                 <div className="row center-xs" style={{height: 350, minWidth: 540}}>
                         {queryGroups}
-                    </div>
-                <RunQuery groupInfo={groupInfo}/>
-
+                  </div>
+                
+                {runQuery}
               </div>
                     
     );
