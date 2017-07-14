@@ -44,25 +44,31 @@ class PatientDemographics extends Component {
     }
     return (
             <Paper style={{display: 'inline-flex', backgroundColor: 'transparent', width: '100%', padding: 10, borderRadius: 0}} zDepth={0}>
-                <div style={{display: 'inline-flex', marginRight: 20, backgroundColor: 'transparent', width: 30}} />
+                
+                <div style={{display: 'inline-flex', marginRight: 20, backgroundColor: 'transparent', width: 30, marginBottom: 50}} />
                 <div style={{width: '100%'}}>
+                  
                     <div style={{width: '100%', color: 'black', fontWeight: 400, fontFamily: 'Roboto Mono', marginRight: 50}}>
-                            {titleDiv}
+                            
 
-                            <div style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10, marginRight: 14}}>
+                            <Paper style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', borderRadius: 2, padding: 10, marginRight: 20}}>
                               
                               <div style={{marginTop: 4}}>
-                                <h6 style={{color: red500, marginBottom: 5, fontSize: 14}}>Gender</h6>
+                                <Paper zDepth={0} style={{padding: 16,paddingTop:0, fontSize: 14, color: red500, marginBottom: 10}}>Gender</Paper>
+                                 {/* <h6 style={{color: red500, paddingBottom: 12, fontSize: 14}}>Gender</h6> */}
+                                 {/* <Divider/>   */}
                                 <div style={{lineHeight: 1.8}}>Male - {this.props.gender.m|| '0'}</div>
                                 <div style={{lineHeight: 1.8}}>Female - {this.props.gender.f || '0'}</div>
                                 <div style={{lineHeight: 1.8}}>Unknown - {this.props.gender[2] || '0'}</div>
                               </div>
-                            </div>
+                            </Paper>
 
-                            <div style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', marginRight: 14, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
+                            <Paper style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', marginRight: 20, padding: 10}}>
                               
                               <div style={{marginTop: 4}}>
-                                <h6 style={{color: teal500, marginBottom: 5, fontSize: 14}}>Age</h6>
+                                <Paper zDepth={0} style={{padding: 16,paddingTop:0, fontSize: 14, color: teal500}}>Age</Paper>
+                                {/* <h6 style={{color: teal500, paddingBottom: 12, fontSize: 14}}>Age</h6> */}
+                                {/* <Divider/> */}
                                 <div style={{lineHeight: 1.8}}>&lt; 9 - {this.props.age[0]}</div>
                                 <div style={{lineHeight: 1.8}}>10-17 - {this.props.age[1]}</div>
                                 <div style={{lineHeight: 1.8}}>18-34 - {this.props.age[2]}</div>
@@ -73,31 +79,37 @@ class PatientDemographics extends Component {
                                 <div style={{lineHeight: 1.8}}>75-84 - {this.props.age[7]}</div>
                                 <div style={{lineHeight: 1.8}}>&ge; 85 - {this.props.age[8]}</div>
                               </div>
-                            </div>
+                            </Paper>
 
-                            <div style={{marginTop: 14, color: grey800, fontSize: 13, display: 'inline-flex', marginRight: 14, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
+                            <Paper style={{marginTop: 14, color: grey800, fontSize: 13, display: 'inline-flex', marginRight: 20, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
                               
                               <div style={{marginTop: 4}}>
-                                <h6 style={{color: blue500, marginBottom: 5, fontSize: 14}}>Race</h6>
+                                <Paper zDepth={0} style={{padding: 16,paddingTop:0, fontSize: 14, color: blue500}}>Race</Paper>
+                                {/* <h6 style={{color: blue500, paddingBottom: 12, fontSize: 14}}>Race</h6> */}
+                                {/* <Divider/> */}
                                 {raceDiv}
                               </div>
-                            </div>
+                            </Paper>
 
-                            <div style={{marginTop: 14, color: grey800, fontSize: 13, display: 'inline-flex', marginRight: 14, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
+                            <Paper style={{marginTop: 14, color: grey800, fontSize: 13, display: 'inline-flex', marginRight: 20, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
                               
                               <div style={{marginTop: 4}}>
-                                <h6 style={{color: green500, marginBottom: 5, fontSize: 14}}>Religion</h6>
+                                <Paper zDepth={0} style={{padding: 16,paddingTop:0, fontSize: 14, color: green500}}>Religion</Paper>
+                                {/* <h6 style={{color: green500, paddingBottom: 12, fontSize: 14}}>Religion</h6> */}
+                                {/* <Divider/> */}
                                 {religionDiv}
                               </div>
-                            </div>
+                            </Paper>
 
-                            <div style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', marginRight: 14, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
+                            <Paper style={{marginTop: 14, fontSize: 13, color: grey800, display: 'inline-flex', marginRight: 20, border: `solid 1px ${grey300}`, borderRadius: 2, padding: 10}}>
                               
                               <div style={{marginTop: 4}}>
-                                <h6 style={{color: orange500, marginBottom: 5, fontSize: 14}}>Language</h6>
+                                <Paper zDepth={0} style={{padding: 16,paddingTop:0, fontSize: 14, color: orange500}}>Language</Paper>
+                                {/* <h6 style={{color: orange500, paddingBottom: 5, fontSize: 14}}>Language</h6> */}
+                                {/* <Divider/> */}
                                 {langDiv}
                               </div>
-                            </div>
+                            </Paper>
 
                             
                     </div>  
