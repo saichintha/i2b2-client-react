@@ -69,3 +69,25 @@ export var updateTreeData = (treeData) => {
         treeData
     };
 };
+
+export var openSnackBar = (open, prefix, concept, elementID) => {
+    return {
+        type: 'OPEN_SNACK_BAR',
+        open,
+        prefix,
+        concept,
+        elementID
+    };
+};
+
+export var activeSearchResult = (name, code, num, fullname, dimcode, visual) => {
+    return {
+        type: 'ACTIVE_SEARCH_RESULT',
+        name,
+        code,
+        num,
+        fullname,
+        dimcode,
+        visual
+    };
+};

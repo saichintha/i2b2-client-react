@@ -1,5 +1,5 @@
 import * as redux from 'redux';
-import {conceptReducer, queryNameReducer, queryResultReducer, tabChange, searchResultReducer, searchActiveReducer, treeDataReducer} from './reducers.js';
+import {conceptReducer, queryNameReducer, queryResultReducer, tabChange, searchResultReducer, searchActiveReducer, treeDataReducer, snackBarReducer, activeSearchResultReducer} from './reducers.js';
 import thunk from 'redux-thunk';
 
 export var configure = (initialState) => {
@@ -10,7 +10,9 @@ export var configure = (initialState) => {
     pastConcepts: searchResultReducer,
     activeTabIndex: tabChange,
     searchActive: searchActiveReducer,
-    treeData: treeDataReducer
+    treeData: treeDataReducer,
+    snackBar: snackBarReducer,
+    activeSearchResult: activeSearchResultReducer
   });
 
   var store = redux.createStore(reducer, initialState, redux.compose(

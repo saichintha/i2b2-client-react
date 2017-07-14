@@ -92,3 +92,37 @@ export var treeDataReducer = (state = {}, action) => {
                 return state;
         };
 };
+
+export var snackBarReducer = (state = {open: false, msg: ''}, action) => {
+        switch (action.type) {
+            case 'OPEN_SNACK_BAR':
+                return {
+                    open: action.open,
+                    prefix: action.prefix,
+                    concept: action.concept,
+                    elementID: action.elementID
+                };
+            
+            
+            default:
+                return state;
+        };
+};
+
+export var activeSearchResultReducer = (state = null, action) => {
+        switch (action.type) {
+            case 'ACTIVE_SEARCH_RESULT':
+                return {
+                    conceptName: action.name,
+                    conceptCode: action.code,
+                    patientNum: action.num,
+                    conceptFullName: action.fullname,
+                    conceptDimcode: action.dimcode,
+                    visual: action.visual
+                };
+            
+            
+            default:
+                return state;
+        };
+};
