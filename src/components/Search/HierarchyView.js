@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as actions from '../../redux/actions.js'
 import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
-import {blue500, grey900,grey700, grey500, grey300, blue200, blue400, grey200, green500, grey100} from 'material-ui/styles/colors';
+import {blue500, grey900,grey700, grey500, grey300, blue200, blue400, grey200, green500, grey100, teal500} from 'material-ui/styles/colors';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
@@ -12,6 +12,9 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import SortableTree, {toggleExpandedForAll} from 'react-sortable-tree';
 import Add from 'material-ui/svg-icons/content/add';
+import Dialog from 'material-ui/Dialog';
+import QueryGroupArea from '../Home/QueryGroupArea';
+
 
 function toTreeData(tree) {
   return Object.keys(tree).map(function (title) {
@@ -47,7 +50,8 @@ class HierarchyView extends Component {
             searchFoundCount: null,
             addOpen: false,
             expanded: false,
-            expandLabel: 'Expand'
+            expandLabel: 'Expand',
+            dialogOpen: false
         }
     }
 
@@ -55,10 +59,14 @@ class HierarchyView extends Component {
 
     componentDidMount () {
         var filePathsArray = this.props.treeData.map(function(path) {
-            var editedPath = path.c_fullname.replace(/\\/g, '/').slice(0,-1);
+          console.log(path.c_fullname);
+            var editedPath = path.c_fullname.replace(/\/\//g, '-');
+            editedPath = path.c_fullname.replace(/\\/g, '/').slice(0,-1);
             editedPath = editedPath.substring(0, editedPath.lastIndexOf('/')) + '/' + path.c_name;
+            
             editedPath = editedPath.replace(/\([0-9]\)/g, '');
             editedPath += ' – ' + path.patient_num + ' patients' + '@' + path.c_basecode;
+            console.log(editedPath)
             return editedPath;
         });
          
@@ -100,10 +108,27 @@ class HierarchyView extends Component {
       });
     }
 
-    handleAdd = (concept) => {
+    handleAdd = (node) => {
+      console.log(node);
+      var conceptObject = this.props.treeData.filter(function(e) {
+        return e.c_basecode == node.concept_cd;
+      });
+      conceptObject = conceptObject[0];
+      var {dispatch} = this.props;
+      
+      dispatch(actions.activeSearchResult(
+            conceptObject.c_name,
+            conceptObject.c_basecode,
+            conceptObject.patient_num,
+            conceptObject.concept_fullname,
+            conceptObject.concept_basecode,
+            'LA',
+        ))
+
       this.setState({
         addOpen: !this.state.addOpen,
-        conceptName: concept
+        conceptName: node.title,
+        dialogOpen: true
       })
     }
 
@@ -114,6 +139,12 @@ class HierarchyView extends Component {
                 searchString: that.props.searchTerm
             })
         }, 10);
+    }
+
+    handleDialogClose = () => {
+      this.setState({
+        dialogOpen: false
+      })
     }
 
     render() {
@@ -141,15 +172,15 @@ class HierarchyView extends Component {
         });
 
         const alertNodeInfo = ({ node, path, treeIndex }) => {
-            return node.title; 
+            return node; 
         };
       
-      var height = 500;
+      var height = 450;
       return (
-        <div style={{overflow: 'hidden'}} >
+        <div style={{overflow: 'hidden'}}>
 
-            <Paper style={{display: 'flex', width: '100%', overflowX: 'hidden', overflowY: 'hidden', paddingBottom: 6, paddingTop: 6}} zDepth={0}>
-                  <div style={{width: '85%', display: 'inline-flex',lineHeight: 1.4, paddingLeft: 24, alignItems: 'center', fontWeight: 600}}>
+            <Paper style={{display: 'flex', width: '100%', overflowX: 'hidden', overflowY: 'hidden', paddingBottom: 6, paddingTop: 6, backgroundColor: teal500, color: 'white', borderRadius: 0}} zDepth={0}>
+                  <div style={{width: '85%', display: 'inline-flex',lineHeight: 1.4, paddingLeft: 24, alignItems: 'center', fontWeight: 500}}>
                       Search Results Hierarchy
                       <Paper zDepth={0} style={{marginLeft: 'auto', marginRight: 'auto', backgroundColor: grey200, borderRadius: 4, padding: 4, height: 36, display: 'flex', alignItems: 'center'}}>
                         <TextField
@@ -159,7 +190,7 @@ class HierarchyView extends Component {
                         value={this.state.searchString}
                         onChange={event =>
                           this.setState({ searchString: event.target.value })}
-                        style={{marginLeft: 'auto', marginRight: 'auto', color: grey900, paddingLeft: 15, paddingRight: 15}}
+                        style={{marginLeft: 'auto', marginRight: 'auto', color: grey900, paddingLeft: 15, paddingRight: 15, width: 380}}
                         underlineStyle={{display: 'none'}}
                         />
                       </Paper>
@@ -167,7 +198,7 @@ class HierarchyView extends Component {
                   </div>
                   <div style={{display: 'inline-flex', alignItems: 'center',  justifyContent: 'flex-end'}}>
                         
-                        <FlatButton label={this.state.expandLabel} onTouchTap={this.expand} style={{marginRight: 20}}/>
+                        <FlatButton label={this.state.expandLabel} onTouchTap={this.expand} style={{marginRight: 20}} labelStyle={{color: 'white'}}/>
                         
                   </div>
               </Paper>
@@ -222,6 +253,18 @@ class HierarchyView extends Component {
             </div>
           </div>
           
+          <Dialog
+          title={this.state.conceptName}
+          modal={false}
+          open={this.state.dialogOpen}
+          onRequestClose={this.handleDialogClose}
+          titleStyle={{backgroundColor: blue500, color: 'white'}}
+          bodyStyle={{paddingBottom: 0, overflowX: 'hidden', backgroundColor: grey100, paddingBottom: 10}}>
+              <Paper zDepth={0} style={{backgroundColor: grey100}}>
+                  <Paper zDepth={0} style={{backgroundColor: 'transparent', fontSize: 16, paddingTop: 12, position: 'relative', top: 5}}>Current Group State</Paper> 
+                    <QueryGroupArea mainDashboard={false}/>
+              </Paper>
+          </Dialog>
         </div>
       );
   }
