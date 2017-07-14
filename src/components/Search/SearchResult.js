@@ -4,7 +4,7 @@ import axios from 'axios';
 const apiURL = 'http://localhost:9000';
 import Group from 'material-ui/svg-icons/social/group';
 import Paper from 'material-ui/Paper';
-import {blue500, grey900, grey400, grey700, grey300,grey100, blue100, blue800, green400, green600} from 'material-ui/styles/colors';
+import {blue500, grey900, grey400, grey700, grey300,grey100, blue100, blue800, green400, green600, amber500, teal500} from 'material-ui/styles/colors';
 import Arrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import DemIcon from 'material-ui/svg-icons/editor/pie-chart';
 import Chart from 'material-ui/svg-icons/editor/insert-chart';
@@ -21,6 +21,8 @@ import {connect} from 'react-redux';
 import * as actions from './../../redux/actions.js'
 import Hierarchy from 'material-ui/svg-icons/content/filter-list';
 import HierarchyView from './HierarchyView';
+import QueryGroupArea from '../Home/QueryGroupArea';
+import Close from 'material-ui/svg-icons/hardware/keyboard-arrow-up';
 
 class SearchResult extends Component {
   constructor(props) {
@@ -33,7 +35,8 @@ class SearchResult extends Component {
         complete: true,
         demDiv: false,
         demDone: false,
-        treeDiv: false
+        treeDiv: false,
+        groupDiv: false
     }
   }
 
@@ -52,7 +55,9 @@ class SearchResult extends Component {
             })
         } else {
             this.setState({
-                demDiv: !this.state.demDiv
+                demDiv: !this.state.demDiv,
+                treeDiv: false,
+                groupDiv: false
             })
         }
     }
@@ -87,7 +92,8 @@ class SearchResult extends Component {
             languages: lang,
             demDone: true,
             demDiv: true,
-            treeDiv: false
+            treeDiv: false,
+            groupDiv: false
         })
     }
 
@@ -143,8 +149,11 @@ class SearchResult extends Component {
 
     handleAdd = (e) => {
         this.setState({
-            addOpen: true,
-            anchorEl: event.currentTarget,
+            // addOpen: true,
+            // anchorEl: event.currentTarget,
+            groupDiv: true,
+            demDiv: false,
+            treeDiv: false
         });
     }
 
@@ -156,43 +165,77 @@ class SearchResult extends Component {
 
     handleAddToGroup = (event, menuItem, index) => {
         var {dispatch} = this.props;
-        dispatch(actions.addConceptToGroup(index+1, 
+        // var elementID = uuid();
+        // dispatch(actions.addConceptToGroup(index+1, 
+        //     this.props.conceptName,
+        //     this.props.conceptCode,
+        //     this.state.patientNum,
+        //     elementID
+        // ));
+        // this.setState({
+        //     addOpen: false
+        // });
+
+        dispatch(actions.activeSearchResult(
             this.props.conceptName,
             this.props.conceptCode,
             this.state.patientNum,
-            uuid()
-        ));
+            this.props.conceptFullName,
+            this.props.conceptDimcode,
+            this.props.visual,
+        ))
         this.setState({
-            addOpen: false
+            // addOpen: true,
+            // anchorEl: event.currentTarget,
+            groupDiv: true,
+            demDiv: false,
+            treeDiv: false
         });
         
-        if(!this.props.past){
-            var searchResultPackage = {
-                conceptName: this.props.conceptName,
-                conceptFullName: this.props.conceptFullName,
-                conceptCode: this.props.conceptCode,
-                conceptDimcode: this.props.conceptDimcode,
-                visual: this.props.visual,
-                patientNum: this.state.patientNum
-            }
-            dispatch(actions.addSearchResult(searchResultPackage))
-        }
-        
+        // if(!this.props.past){
+        //     var searchResultPackage = {
+        //         conceptName: this.props.conceptName,
+        //         conceptFullName: this.props.conceptFullName,
+        //         conceptCode: this.props.conceptCode,
+        //         conceptDimcode: this.props.conceptDimcode,
+        //         visual: this.props.visual,
+        //         patientNum: this.state.patientNum
+        //     }
+        //     dispatch(actions.addSearchResult(searchResultPackage))
+        // }
+
+        // dispatch(actions.openSnackBar(true, 'Added – ', this.props.conceptName, elementID))
     }
 
     viewHierarchy = () => {
         this.setState({
             treeDiv: !this.state.treeDiv,
-            demDiv: false
+            demDiv: false,
+            groupDiv: false
+        })
+    }
+
+    handleCloseGroup = () => {
+        this.setState({
+            groupDiv: false
         })
     }
 
   render() {
       var demDiv = (<div/>);
       var treeDiv = (<div/>);
+      var groupDiv = (<div/>);
+      var addGroupButton = (
+        <IconButton tooltip="Add to group" onTouchTap={this.handleAddToGroup} style={{paddingLeft: 4, paddingRight: 4}} touch={true}>
+            <Add color={green400}/>
+        </IconButton>
+      );
       if(this.state.demDiv){
         demDiv = (
             <div style={{backgroundColor: grey100}}>
+                <Paper zDepth={0} style={{padding: 16, backgroundColor: teal500, color: 'white', fontSize: 16, fontWeight: 500, paddingLeft: 24, borderRadius: 0}}>
+                    Patient Set Demographics
+                </Paper>
                 <PatientDemographics age={this.state.ages} race={this.state.races} gender={this.state.genders} religion={this.state.religions} lang={this.state.languages}/>
                 <Divider/>
             </div>
@@ -206,6 +249,25 @@ class SearchResult extends Component {
             </div>
           )
       }
+
+      if(this.state.groupDiv){
+          addGroupButton = (
+            <IconButton tooltip="Close" onTouchTap={this.handleCloseGroup} style={{paddingLeft: 4, paddingRight: 4, backgroundColor: amber500, borderRadius: '50%', alignItems: 'center', width: 24, height: 20, marginTop: 5, marginLeft: 15, marginRight: 10}} touch={true} iconStyle={{position: 'relative', bottom: 11, right: 3, height: 22, width: 22}}>
+                <Close color={'white'}/>
+            </IconButton>
+          )
+          groupDiv=(
+              <div style={{backgroundColor: grey100}}>
+                <Paper zDepth={0} style={{backgroundColor: teal500, fontSize: 16, paddingTop: 16, position: 'relative', paddingRight: 24, paddingLeft: 25, color:'white', fontWeight: 500, paddingBottom: 16, borderRadius: 0}}>Current Group State</Paper> 
+                <div style={{paddingLeft: 24, paddingRight: 24}}>
+                    
+                    <QueryGroupArea mainDashboard={false}/>
+                    
+                </div>
+                <Divider style={{marginTop: 6}}/>
+              </div>
+          )
+      }
       if(this.state.complete){
           var patientNum = (<span style={{ position: 'relative', color: blue800, fontWeight: 500, fontFamily: 'Roboto Mono'}}> - </span>);
           if(this.state.patientNum != null){
@@ -216,9 +278,7 @@ class SearchResult extends Component {
                         <Paper style={{display: 'inline-flex', backgroundColor: 'transparent', width: '100%', padding: 14}} zDepth={0}>
                             <div style={{display: 'inline-flex', marginRight: 20}} ref={(input) => { this.addButton = input; }}>
 
-                                    <IconButton tooltip="Add to group" onTouchTap={this.handleAdd} style={{paddingLeft: 4, paddingRight: 4}}>
-                                        <Add color={green400}/>
-                                    </IconButton>
+                                    {addGroupButton}
 
                                     <Popover
                                     open={this.state.addOpen}
@@ -266,11 +326,9 @@ class SearchResult extends Component {
                         </Paper>
                     <Divider />
 
-                    <div>
-                           {demDiv} 
-                    </div>
-
+                        {demDiv} 
                         {treeDiv}
+                        {groupDiv}
 
                 </div> 
                 
