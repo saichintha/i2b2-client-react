@@ -15,7 +15,7 @@ class SearchResultList extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        console.log(nextProps.resultData);
+        // console.log(nextProps.resultData);
         var that = this;
         if(nextProps.resultData.length > 0){
             var resArray = nextProps.resultData.map(function(row) {
@@ -34,16 +34,16 @@ class SearchResultList extends Component {
     }
 
     render() {
-        var resArray = (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
-                    <h3>No results to display.</h3>
-                </Paper>);
+        // var resArray = (<Paper zDepth={0} style={{backgroundColor: 'transparent', textAlign: 'center', padding: 20}}>
+        //             <h3>No results to display.</h3>
+        //         </Paper>);
 
-        if(this.state.resArray){
-            resArray = this.state.resArray;
-        }
+        // if(this.state.resArray){
+        //     resArray = this.state.resArray;
+        // }
         return (
         <Paper zDepth={1}>
-            {resArray}
+            {this.state.resArray}
         </Paper>
         );
     }
