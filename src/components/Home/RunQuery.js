@@ -13,6 +13,7 @@ const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
 import Masonry from 'react-masonry-component';
 import FullQueryResult from './FullQueryResult';
 import {connect} from 'react-redux';
@@ -20,6 +21,7 @@ import * as actions from './../../redux/actions.js'
 import Divider from 'material-ui/Divider';
 import uuid from 'uuid/v4';
 import QueryResult from './QueryResult';
+import PatternTable from './PatternTable';
 
 class RunQuery extends Component {
   constructor(props) {
@@ -28,7 +30,9 @@ class RunQuery extends Component {
     this.state = {
         groupInfo: this.props.groupInfo,
         patientNum: null,
-        complete: false
+        complete: false,
+        open: false,
+        patternResult: null,
     }
   }
 
@@ -152,7 +156,11 @@ class RunQuery extends Component {
         .then((results) => {
           // const patients = result.data[0].array_length;
         //   console.log(results.data);
-          console.log(results.data);
+          // console.log(results.data);
+          this.setState({
+            patternResult: results.data,
+            open: true
+          })
         })
         .catch((err) => console.log(err));
   }
@@ -164,6 +172,10 @@ class RunQuery extends Component {
           complete: false
       })
   }
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
 
   render() {
     if(this.state.complete){
@@ -177,6 +189,21 @@ class RunQuery extends Component {
 
           <div className="row center-xs" style={{marginTop: 40, marginBottom: 40}}>
             <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON} queryName={this.state.queryName} handleCommonPattern={this.handleCommonPattern}/>
+
+              <Dialog
+              title="Common Patterns"
+              actions={<FlatButton
+              label="Close"
+              primary={true}
+              onClick={this.handleClose}/>}
+              modal={true}
+              open={this.state.open}
+              autoScrollBodyContent={true}
+            >
+              <Paper zDepth={0}>
+                <PatternTable patternResult={this.state.patternResult}/>
+              </Paper>
+            </Dialog>
           </div>
 
         </div>
