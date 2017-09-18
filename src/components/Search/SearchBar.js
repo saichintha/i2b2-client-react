@@ -3,6 +3,7 @@ import Paper from 'material-ui/Paper';
 import Search from 'material-ui/svg-icons/action/search';
 import {blue500, grey900,grey700, grey500, grey300, blue200, blue400, grey200, green500, grey100} from 'material-ui/styles/colors';
 import axios from 'axios';
+// const apiURL = 'https://35.190.186.6:8443';
 const apiURL = 'http://localhost:9000';
 import TextField from 'material-ui/TextField';
 import * as actions from '../../redux/actions.js'
@@ -11,7 +12,7 @@ import {connect} from 'react-redux';
 class SearchBar extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       searchText: '',
       dataSource: [],
@@ -26,11 +27,11 @@ class SearchBar extends Component {
     this.count = 1;
   }
 
-    
+
 
   handleSearchText = (e) => {
       const searchText = e.target.value;
-      
+
       this.setState({
           searchText: searchText
       });
@@ -96,18 +97,17 @@ class SearchBar extends Component {
     }
 
 
-
   render() {
       return (
                   <Paper style={{height: 48, minWidth: 250, borderRadius: 4, display: 'flex', alignItems: 'center', backgroundColor: this.props.barColor, color: 'white'}} zDepth={0}>
                     <div ref={(input) => { this.searchBar = input; }} style={{width: '100%'}} id="searchBarID">
 
-                    
+
                     <div style={{display: 'inline-flex', position: 'relative', top: 10, marginLeft: 16, marginRight: 4}}>
                       <Search color={this.props.barTextColor} style={{height: 30, width: 30}}/>
                     </div>
                     <div style={{display: 'inline-flex', width: 'calc(100% - 65px)'}}>
-                      
+
                       <TextField
                       hintText="Search diagnoses, medications, lab tests, visit details etc..."
                       underlineStyle={{display: 'none'}}
@@ -121,7 +121,7 @@ class SearchBar extends Component {
                       onMouseEnter={this.mouseEnter}
                       onMouseLeave={this.mouseLeave}
                       />
-                          
+
                     </div>
                     </div>
 

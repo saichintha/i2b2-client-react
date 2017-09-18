@@ -4,8 +4,11 @@ import {List, ListItem} from 'material-ui/List';
 import FileFolder from 'material-ui/svg-icons/file/folder';
 import Avatar from 'material-ui/Avatar';
 import {blue500, grey900, grey500} from 'material-ui/styles/colors';
+
 import axios from 'axios';
+// const apiURL = 'https://35.190.186.6:8443';
 const apiURL = 'http://localhost:9000';
+
 import Folder from './Folder';
 class OntologyMain extends Component {
 

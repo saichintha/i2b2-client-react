@@ -6,6 +6,7 @@ import {blue400, grey900, grey500,grey800, grey300, green400, green500, blue200,
 import Divider from 'material-ui/Divider';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
 class FullQueryResult extends Component {
   constructor(props) {
@@ -28,8 +29,10 @@ class FullQueryResult extends Component {
                 <CardText style={{paddingTop: 0}}>
                     <PatientDemographics age={this.props.ages} race={this.props.races} gender={this.props.genders} religion={this.props.religions} lang={this.props.languages} showTitle={false}/>
                 </CardText>
+
+                <RaisedButton label="Analyze Common Patterns" backgroundColor={blueGrey300} onTouchTap={this.props.handleCommonPattern} labelStyle={{color: 'white'}} style={{marginRight: 20}}/>
             </Card>
-                
+
         </div>
     );
   }

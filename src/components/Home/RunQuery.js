@@ -5,8 +5,11 @@ import Search from 'material-ui/svg-icons/action/search';
 import Clear from 'material-ui/svg-icons/action/cached';
 import Avatar from 'material-ui/Avatar';
 import {blue400, grey900, grey500,grey800, grey300, blue100, blue200, blue600, blue500, blueGrey300} from 'material-ui/styles/colors';
+
 import axios from 'axios';
+// const apiURL = 'https://35.190.186.6:8443';
 const apiURL = 'http://localhost:9000';
+
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -50,7 +53,7 @@ class RunQuery extends Component {
                const sexName = dem.concept_cd.split(':')[1];
                sex[sexName] = parseInt(dem.count);
                patientNum += parseInt(dem.count);
-           } 
+           }
         }
         // console.log('AgeJSON', ageJSON);
         var ageGroups = this.formatAges(age);
@@ -142,6 +145,18 @@ class RunQuery extends Component {
         .catch((err) => console.log(err));
   }
 
+  handleCommonPattern = () => {
+    axios.post(apiURL + '/api/commonPattern', {
+            queryGroups: JSON.stringify(this.state.queryConceptInfo)
+        })
+        .then((results) => {
+          // const patients = result.data[0].array_length;
+        //   console.log(results.data);
+          console.log(results.data);
+        })
+        .catch((err) => console.log(err));
+  }
+
   handleResetGroups = () => {
       var {dispatch} = this.props;
       dispatch(actions.resetAllGroups());
@@ -159,9 +174,9 @@ class RunQuery extends Component {
 
             <RaisedButton label="Search" icon={<Search/>} backgroundColor={blue500} onTouchTap={this.handleRunQuery} labelStyle={{color: 'white'}}/>
           </div>
-    
+
           <div className="row center-xs" style={{marginTop: 40, marginBottom: 40}}>
-            <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON} queryName={this.state.queryName}/>
+            <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON} queryName={this.state.queryName} handleCommonPattern={this.handleCommonPattern}/>
           </div>
 
         </div>
@@ -175,7 +190,7 @@ class RunQuery extends Component {
 
                 <RaisedButton label="Search" icon={<Search/>} backgroundColor={blue500} onTouchTap={this.handleRunQuery}  labelStyle={{color: 'white'}}/>
                 </div>
-            
+
             </div>
             </div>
         );
