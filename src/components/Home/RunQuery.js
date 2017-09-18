@@ -178,6 +178,10 @@ class RunQuery extends Component {
   };
 
   render() {
+    var totalPatterns = 0;
+    if(this.state.patternResult){
+      totalPatterns = this.state.patternResult.length
+    }
     if(this.state.complete){
       return (
         <div className="row center-xs" style={{marginTop: 20, minWidth: 540, display: 'block'}}>
@@ -191,7 +195,7 @@ class RunQuery extends Component {
             <FullQueryResult patientNum={this.state.patientNum} ages={this.state.ages} races={this.state.races} genders={this.state.genders} religions={this.state.religions} languages={this.state.languages} ageJSON={this.state.ageJSON} queryName={this.state.queryName} handleCommonPattern={this.handleCommonPattern}/>
 
               <Dialog
-              title="Common Patterns"
+              title={"Common Patterns – " + totalPatterns + " concepts"}
               actions={<FlatButton
               label="Close"
               primary={true}
@@ -199,9 +203,11 @@ class RunQuery extends Component {
               modal={true}
               open={this.state.open}
               autoScrollBodyContent={true}
+              bodyStyle={{padding: 0}}
+              contentStyle={{padding: 0}}
             >
               <Paper zDepth={0}>
-                <PatternTable patternResult={this.state.patternResult}/>
+                <PatternTable patternResult={this.state.patternResult} patientNum={this.state.patientNum}/>
               </Paper>
             </Dialog>
           </div>

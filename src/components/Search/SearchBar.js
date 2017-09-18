@@ -78,7 +78,7 @@ class SearchBar extends Component {
         barWidth: this.searchBar.offsetWidth,
         anchorEL: this.searchBar.getBoundingClientRect()
       });
-      window.addEventListener("resize", this.updateDimensions);
+      // window.addEventListener("resize", this.updateDimensions);
       // document.addEventListener("mousemove", this._onMouseMove);
       this.searchField.focus();
     }
