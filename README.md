@@ -21,6 +21,9 @@ Compiled with warnings.
 
 Then visit http://localhost:3000/ to view the application.
 
+## Blurry GIF Demo
+![alt-text](https://github.com/saichintha/i2b2-client-react/blob/master/src/common/images/demo.gif)
+
 ## Screenshots
 ### Home
 ![alt-text](https://github.com/saichintha/i2b2-client-react/blob/master/src/common/images/home.png)
